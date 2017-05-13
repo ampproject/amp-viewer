@@ -15,7 +15,7 @@ class AmpViewer {
  }
  
  attach() {
-   var iframe = document.createElement('iframe');
+   let iframe = document.createElement('iframe');
    this.hostEl_.appendChild(iframe);
    iframe.src = this.ampUrl_;
  }
