@@ -16,7 +16,7 @@
 
 
 /**
- * @fileoverview This file is a Viewer for AMP Documents. 
+ * This file is a Viewer for AMP Documents. 
  */
 class AmpViewer {
  
@@ -31,7 +31,7 @@ class AmpViewer {
   /** @private {string} */
   this.ampUrl_ = ampUrl;
 
-  /** @private {Element} */
+  /** @private {?Element} */
   this.iframe_ = null;
  }
 
