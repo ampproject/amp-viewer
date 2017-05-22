@@ -78,7 +78,6 @@ function getPartials(acc, embedderDir, template) {
 gulp.task('build', 'build', function(cb) {
   runSequence('clean', 'highlight', 'img', 'postcss', 'posthtml', 'www',
       'validate', 'bundle', cb);
-      // 'validate', cb);
 });
 
 gulp.task('clean', function() {
@@ -134,8 +133,6 @@ gulp.task('watch', 'watch stuff', ['build'], function() {
     config.src.img],
       ['build']);
 });
-
-gulp.task('default', ['build']);
 
 gulp.task('posthtml', 'build kickstart files', function() {
   const plugins = [
