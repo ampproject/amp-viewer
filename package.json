@@ -1,0 +1,59 @@
+{
+  "name": "amp-viewer",
+  "version": "0.1.0",
+  "description": "AMP Viewer",
+  "main": "index.js",
+  "author": "The AMP HTML Authors",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chenshay/amp-viewer.git"
+  },
+  "scripts": {
+    "build": "gulp build",
+    "clean": "gulp clean",
+    "www": "gulp www",
+    "highlight": "gulp highlight",
+    "watch": "gulp watch",
+    "serve": "gulp serve"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.5.3",
+    "child_process": "^1.0.2",
+    "cssbeautify": "^0.3.1",
+    "cssnano": "^3.8.1",
+    "del": "^2.2.2",
+    "express": "^4.14.0",
+    "fs-extra": "^2.0.0",
+    "gulp": "^3.9.1",
+    "gulp-amphtml-validator": "1.0.0",
+    "gulp-help": "^1.6.1",
+    "gulp-postcss": "^6.2.0",
+    "gulp-posthtml": "^2.0.0",
+    "gulp-replace": "^0.5.4",
+    "gulp-util": "3.0.8",
+    "gulp-webserver": "^0.9.1",
+    "highlights": "^2.1.1",
+    "jsdom": "^9.11.0",
+    "mustache": "2.3.0",
+    "path": "^0.12.7",
+    "postcss": "5.0.14",
+    "postcss-calc": "^5.3.1",
+    "postcss-color-function": "^2.0.1",
+    "postcss-custom-media": "^5.0.1",
+    "postcss-custom-properties": "^5.0.1",
+    "postcss-discard-comments": "^2.0.4",
+    "postcss-import": "8.0.2",
+    "posthtml-extend-attrs": "^1.0.0",
+    "posthtml-include": "^1.1.0",
+    "posthtml-inline-assets": "^2.0.0",
+    "run-sequence": "^1.1.5",
+    "through2": "2.0.3"
+  },
+  "dependencies": {
+    "basscss": "^8.0.3",
+    "basscss-addons": "^1.0.0",
+    "basscss-basic": "^1.0.0",
+    "normalize.css": "^5.0.0"
+  }
+}
