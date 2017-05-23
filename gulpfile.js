@@ -24,8 +24,8 @@ const runSequence = require('run-sequence');
 const through = require('through2');
 const fs = require('fs');
 const path = require('path');
-const config = require('./tasks/config');
-require('./tasks');
+const config = require('./build-system/tasks/config');
+require('./build-system/tasks');
 
 const partialsMap = Object.create(null);
 
