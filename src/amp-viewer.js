@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
+import {AmpViewerHost} from './amp-viewer-host';
 
 /**
- * This file is a Viewer for AMP Documents. 
+ * This file is a Viewer for AMP Documents.
  */
 class AmpViewer {
- 
+
  /**
   * @param {!Element} hostElement the element to attatch the iframe to.
   * @param {string} ampUrl the AMP page url.
   */
  constructor(hostElement, ampUrl) {
+  /** @private {AmpViewerHost} */
+  this.viewerHost_ = null;
+
   /** @private {!Element} */
   this.hostElement_ = hostElement;
 
@@ -42,6 +46,14 @@ class AmpViewer {
    this.iframe_ = document.createElement('iframe');
    this.hostElement_.appendChild(this.iframe_);
    this.iframe_.src = this.ampUrl_;
+
+   this.viewerHost_ = new AmpViewerHost(
+     this.hostElement_,
+     this.iframe_,
+     this.ampUrl_,
+     this.requestHandler_,
+     /* logs id */ 1);
  }
 
 }
+window.AmpViewer = AmpViewer;
