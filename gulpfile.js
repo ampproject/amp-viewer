@@ -29,6 +29,10 @@ gulp.task('build', function() {
       .pipe(gulp.dest('dist'));
 });
 
+gulp.task('clean', function() {
+  return del(['dist']);
+});
+
 function serve() {
   var app = require('express')();
   var webserver = require('gulp-webserver');
