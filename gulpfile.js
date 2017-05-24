@@ -29,6 +29,26 @@ gulp.task('build', function() {
       .pipe(gulp.dest('dist'));
 });
 
+function serve() {
+  var app = require('express')();
+  var webserver = require('gulp-webserver');
+
+  var host = 'localhost';
+  var port = process.env.PORT || 8000;
+  var server = gulp.src(process.cwd())
+      .pipe(webserver({
+        port,
+        host,
+        directoryListing: true,
+        livereload: true,
+        https: false,
+        middleware: [app],
+      }));
+
+  return server;
+}
+
 gulp.task('default', function() {
+  serve();
   return gulp.watch([config.src], ['build'])
 });
