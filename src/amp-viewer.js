@@ -30,7 +30,7 @@ class AmpViewer {
   this.viewerHost_ = null;
 
   /** @private {!Element} */
-  this.hostElement_ = hostElement; 
+  this.hostElement_ = hostElement;
 
   /** @private {string} */
   this.ampUrl_ = ampUrl;

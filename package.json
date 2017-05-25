@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "amp-viewer-messaging": "^1.0.1",
     "babel-cli": "^6.24.1",
     "babel-preset-env": "^1.5.1",
     "babel-preset-latest": "^6.24.1",

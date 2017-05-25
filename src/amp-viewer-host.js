@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {APP, Messaging, MessageType, WindowPortEmulator} from 'messaging';
+import {APP, Messaging, MessageType, WindowPortEmulator} from 'amp-viewer-messaging';
 
 const CHANNEL_OPEN_MSG = 'channelOpen';
 
