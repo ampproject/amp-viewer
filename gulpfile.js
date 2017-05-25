@@ -16,6 +16,7 @@
 
 const gulp = require('gulp');
 const babel = require('gulp-babel');
+const bundler = require('gulp-es6-module-bundler');
 const del = require('del');
 
 const config = {
@@ -23,8 +24,10 @@ const config = {
 };
 
 gulp.task('build', function() {
+  var modules = gulp.src('src/*.js');
   return gulp.src(config.src)
       .pipe(babel())
+      .pipe(bundler(modules))
       .pipe(gulp.dest('dist'));
 });
 

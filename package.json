@@ -11,7 +11,8 @@
     "gulp-webserver": "^0.9.1"
   },
   "dependencies": {
-    "assert": "^1.4.1"
+    "assert": "^1.4.1",
+    "gulp-es6-module-bundler": "^0.1.0"
   },
   "scripts": {
     "build": "babel src -d dist"

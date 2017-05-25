@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {APP, Messaging, MessageType, WindowPortEmulator} from 'amp-viewer-messaging';
+// import {APP, Messaging, MessageType, WindowPortEmulator} from 'amp-viewer-messaging';
 
 const CHANNEL_OPEN_MSG = 'channelOpen';
 
@@ -46,117 +46,5 @@ export class AmpViewerHost {
     this.isWebview_ = !!opt_isWebview;
     /** @const {string} */
     this.logsId = opt_logsId;
-
-    if (this.isWebview_ || opt_isHandshakePoll) {
-      /** @private {number} */
-      this.pollingIntervalId_ = setInterval(
-        this.initiateHandshake_.bind(this, this.intervalCtr) , 1000); //poll every second
-    } else {
-      this.waitForHandshake_(frameOrigin);
-    }
-  }
-
-  /**
-   * @private
-   */
-  initiateHandshake_() {
-    this.log('initiateHandshake_');
-    if (this.ampIframe_) {
-      const channel = new MessageChannel();
-      let message = {
-        app: APP,
-        name: 'handshake-poll',
-      };
-      message = this.isWebview_ ? JSON.stringify(message) : message;
-      this.ampIframe_.contentWindow./*OK*/postMessage(
-        message, '*', [channel.port2]);
-
-      channel.port1.onmessage = function(e) {
-        const data = this.isWebview_ ? JSON.parse(e.data) : e.data;
-        if (this.isChannelOpen_(data)) {
-          this.win.clearInterval(this.pollingIntervalId_); //stop polling
-          this.log('messaging established!');
-          this.completeHandshake_(channel.port1, data.requestid);
-        } else {
-          this.messageHandler_(data.name, data.data, data.rsvp);
-        }
-      }.bind(this);
-    }
-  }
-
-  /**
-   * @param {string} targetOrigin
-   * @private
-   */
-  waitForHandshake_(targetOrigin) {
-    this.log('awaitHandshake_');
-    const target = this.ampIframe_.contentWindow;
-    const listener = function(event) {
-      if (event.origin == targetOrigin &&
-              this.isChannelOpen_(event.data) &&
-              (!event.source || event.source == target)) {
-        this.log(' messaging established with ', targetOrigin);
-        this.win.removeEventListener('message', listener);
-        const port = new WindowPortEmulator(this.win, targetOrigin, target);
-        this.completeHandshake_(port, event.data.requestid);
-      }
-    }.bind(this);
-    this.win.addEventListener('message', listener);
-  }
-
-  /**
-   * @param {!MessagePort|!WindowPortEmulator} port
-   * @param {string} requestId
-   * @private
-   */
-  completeHandshake_(port, requestId) {
-    let message = {
-      app: APP,
-      requestid: requestId,
-      type: MessageType.RESPONSE,
-    };
-
-    message = this.isWebview_ ? JSON.stringify(message) : message;
-    this.log('posting Message', message);
-    port./*OK*/postMessage(message);
-
-    this.messaging_ = new Messaging(this.win, port);
-    this.messaging_.setDefaultHandler(this.messageHandler_);
-
-    this.sendRequest('visibilitychange', {
-      state: this.visibilityState_,
-      prerenderSize: this.prerenderSize,
-    }, true);
-  };
-
-  /**
-   * @param {*} eventData
-   * @return {boolean}
-   * @private
-   */
-  isChannelOpen_(eventData) {
-    return eventData.app == APP && eventData.name == CHANNEL_OPEN_MSG;
-  };
-
-  /**
-   * @param {string} type
-   * @param {*} data
-   * @param {boolean} awaitResponse
-   * @return {!Promise<*>|undefined}
-   */
-  sendRequest(type, data, awaitResponse) {
-    this.log('sendRequest');
-    if (!this.messaging_) {
-      return;
-    }
-    return this.messaging_.sendRequest(type, data, awaitResponse);
-  };
-
-  log() {
-    const var_args = Array.prototype.slice.call(arguments, 0);
-    var_args.unshift('[ViewerHost ' + this.logsId + ']');
-    console/*OK*/.log.apply(console, var_args);
   }
 }
-
-self.AmpViewerHost = AmpViewerHost;
