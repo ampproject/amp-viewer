@@ -1,6 +1,9 @@
 {
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
+    "babel-preset-latest": "^6.24.1",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
@@ -8,5 +11,8 @@
   },
   "dependencies": {
     "assert": "^1.4.1"
+  },
+  "scripts": {
+    "build": "babel src -d dist"
   }
 }

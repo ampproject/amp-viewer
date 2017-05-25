@@ -16,6 +16,7 @@
 
 const gulp = require('gulp');
 const babel = require('gulp-babel');
+const del = require('del');
 
 const config = {
   src: 'src/**/*.js',
@@ -53,6 +54,6 @@ function serve() {
 }
 
 gulp.task('default', function() {
-  serve();
-  return gulp.watch([config.src], ['build'])
+  gulp.watch([config.src], ['build']);
+  return serve();
 });
