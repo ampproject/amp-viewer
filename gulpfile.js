@@ -54,6 +54,5 @@ function serve() {
 }
 
 gulp.task('default', function() {
-  gulp.watch([config.src], ['build']);
   return serve();
 });

@@ -1,10 +1,10 @@
 {
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
     "babel-preset-latest": "^6.24.1",
     "del": "^2.2.2",
+    "express": "^4.15.3",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-webserver": "^0.9.1"
