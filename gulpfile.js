@@ -24,9 +24,6 @@ const config = {
 
 gulp.task('build', function() {
   return gulp.src(config.src)
-      .pipe(babel({
-          presets: ['env']
-      }))
       .pipe(gulp.dest('dist'));
 });
 
