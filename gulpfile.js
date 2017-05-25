@@ -24,6 +24,7 @@ const config = {
 
 gulp.task('build', function() {
   return gulp.src(config.src)
+      .pipe(babel())
       .pipe(gulp.dest('dist'));
 });
 
@@ -51,5 +52,6 @@ function serve() {
 }
 
 gulp.task('default', function() {
-  return serve();
+  serve();
+  return gulp.watch([config.src], ['build']);
 });
