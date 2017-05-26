@@ -30,7 +30,11 @@ const config = {
 
 gulp.task('build', function() {
   const bundler = browserify('./src/amp-viewer.js', {debug: true})
-      .transform(babelify);
+     .transform(babelify, {
+       global: true,
+       ignore: /\/node_modules\/(?!amp-viewer-messaging\/)/
+     });
+
   return bundler.bundle()
       .pipe(source('src/amp-viewer.js'))
       .pipe(buffer())
