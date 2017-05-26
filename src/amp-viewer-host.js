@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-console.log('amp-viewer-host is exported');
+import {
+  APP,
+  Messaging,
+  MessageType,
+  WindowPortEmulator,
+} from 'amp-viewer-messaging/messaging';
+
 
 export class AmpViewerHost {
 }
