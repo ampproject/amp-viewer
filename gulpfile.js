@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
+const $$ = require('gulp-load-plugins')();
+const fs = require('fs-extra');
 const gulp = require('gulp');
-const babel = require('gulp-babel');
+const browserify = require('browserify');
+const babelify = require('babelify');
+const del = require('del');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const rename = require('gulp-rename');
 
 const config = {
-  src: 'src/**/*.js',
+  src: ['src/*.js'],
 };
 
 gulp.task('build', function() {
-  return gulp.src(config.src)
-      .pipe(babel({
-          presets: ['env']
-      }))
+  const bundler = browserify('./src/amp-viewer.js', {debug: true})
+      .transform(babelify);
+  return bundler.bundle()
+      .pipe(source('src/amp-viewer.js'))
+      .pipe(buffer())
+      .pipe(rename('amp-viewer.js'))
       .pipe(gulp.dest('dist'));
 });
 
@@ -54,5 +63,8 @@ function serve() {
 
 gulp.task('default', function() {
   serve();
-  return gulp.watch([config.src], ['build'])
+  return $$.watch(config.src, {ignoreInitial: false},
+      $$.batch(function(events, done) {
+        gulp.start('build', done);
+      }));
 });
