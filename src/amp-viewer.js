@@ -60,6 +60,10 @@ class AmpViewer {
     this.hostElement_.appendChild(this.iframe_);
   }
 
+  /**
+   * Place holder request handler. 
+   * TODO (chenshay): implement it.
+   */
   requestHandler_(incoming) {
     console.log('requestHandler_: ', incoming);
   }

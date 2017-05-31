@@ -154,7 +154,7 @@ export class AmpViewerHost {
 
   log() {
     const var_args = Array.prototype.slice.call(arguments, 0);
-    var_args.unshift('[ViewerHost ' + this.logsId + ']');
+    var_args.unshift('[ViewerHost]');
     console/*OK*/.log.apply(console, var_args);
   }
 }
