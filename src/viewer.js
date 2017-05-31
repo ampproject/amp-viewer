@@ -55,7 +55,9 @@ class Viewer {
     this.viewerMessaging_ = new ViewerMessaging(
       window,
       this.iframe_,
-      this.parseUrl(this.ampDocCachedUrl_).origin;
+      this.parseUrl(this.ampDocCachedUrl_).origin);
+
+    this.viewerMessaging_.start();
 
     this.iframe_.src = this.buildIframeSrc_();
     this.hostElement_.appendChild(this.iframe_);

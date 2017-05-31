@@ -32,25 +32,26 @@ export class ViewerMessaging {
    * @param {!Window} win
    * @param {!HTMLIFrameElement} ampIframe
    * @param {string} frameOrigin
-   * @param {boolean=} opt_isWebview Should viewer initiate handshake w/ polling
-   * @param {boolean=} opt_isHandshakePoll
-   * looking at.
    */
-  constructor(win, ampIframe, frameOrigin, opt_isWebview,
-    opt_isHandshakePoll) {
+  constructor(win, ampIframe, frameOrigin) {
     /** @const {!Window} */
     this.win = win;
     /** @private {!HTMLIFrameElement} */
     this.ampIframe_ = ampIframe;
-    /** @const {boolean} */
-    this.isWebview_ = !!opt_isWebview;
+    /** @private {string} */
+    this.frameOrigin_ = frameOrigin;
+  }
 
-    if (this.isWebview_ || opt_isHandshakePoll) {
+  /**
+   * @param {boolean=} opt_isHandshakePoll
+   */
+  start(opt_isHandshakePoll) {
+    if (opt_isHandshakePoll) {
       /** @private {number} */
       this.pollingIntervalId_ = setInterval(this.initiateHandshake_.bind(
         this, this.intervalCtr) , 1000); //poll every second
     } else {
-      this.waitForHandshake_(frameOrigin);
+      this.waitForHandshake_(this.frameOrigin_);
     }
   }
 
@@ -65,20 +66,19 @@ export class ViewerMessaging {
         app: APP,
         name: 'handshake-poll',
       };
-      message = this.isWebview_ ? JSON.stringify(message) : message;
       this.ampIframe_.contentWindow./*OK*/postMessage(
         message, '*', [channel.port2]);
 
-      channel.port1.onmessage = function(e) {
-        const data = this.isWebview_ ? JSON.parse(e.data) : e.data;
+      channel.port1.onmessage = e => {
+        const data = e.data;
         if (this.isChannelOpen_(data)) {
-          this.win.clearInterval(this.pollingIntervalId_); //stop polling
+          clearInterval(this.pollingIntervalId_); //stop polling
           log('messaging established!');
           this.completeHandshake_(channel.port1, data.requestid);
         } else {
           messageHandler(data.name, data.data, data.rsvp);
         }
-      }.bind(this);
+      }
     }
   }
 
@@ -115,7 +115,6 @@ export class ViewerMessaging {
       type: MessageType.RESPONSE,
     };
 
-    message = this.isWebview_ ? JSON.stringify(message) : message;
     log('posting Message', message);
     port./*OK*/postMessage(message);
 
