@@ -25,10 +25,10 @@ class Viewer {
   /**
    * @param {!Window} win
    * @param {!Element} hostElement the element to attatch the iframe to.
-   * @param {string} ampUrl the AMP page url.
-   * @param {string} ampOrigin the AMP page origin.
+   * @param {string} ampDocUrl the AMP Document url.
+   * @param {string} ampDocCachedUrl the cached AMP Document url.
    */
-  constructor(hostElement, ampUrl, ampOrigin) {
+  constructor(hostElement, ampDocUrl, ampDocCachedUrl) {
     /** @private {ViewerMessaging} */
     this.viewerMessaging_ = null;
 
@@ -36,10 +36,10 @@ class Viewer {
     this.hostElement_ = hostElement;
 
     /** @private {string} */
-    this.ampUrl_ = ampUrl;
+    this.ampDocUrl_ = ampDocUrl;
 
     /** @private {string} */
-    this.ampOrigin_ = ampOrigin;
+    this.ampDocCachedUrl_ = ampDocCachedUrl;
 
     /** @private {?Element} */
     this.iframe_ = null;
@@ -50,15 +50,71 @@ class Viewer {
    */
   attach() {
     this.iframe_ = document.createElement('iframe');
-    this.hostElement_.appendChild(this.iframe_);
+    // TODO (chenshay): iframe_.setAttribute('scrolling', 'no')
+    // to enable the scrolling workarounds for iOS.
 
     this.viewerMessaging_ = new ViewerMessaging(
       window,
       this.iframe_,
-      this.ampOrigin_,
+      this.parseUrl(this.ampDocCachedUrl_).origin,
       this.requestHandler_);
-      
-    this.iframe_.src = this.ampUrl_;
+
+    this.iframe_.src = this.buildIframeSrc_();
+    this.hostElement_.appendChild(this.iframe_);
+  }
+
+  /**
+   * @return {string}
+   */
+  buildIframeSrc_() {
+    const initParams = {
+      origin: this.parseUrl(window.location.href).origin,
+    };
+
+    return this.ampDocCachedUrl_ + 
+            '/v/s/' + 
+            this.ampDocUrl_ + 
+            '/?amp_js_v=0.1#' + 
+            this.paramsToStr(initParams);
+  }
+
+  /**
+   * @param {*} params
+   * @return {string}
+   */
+  paramsToStr(params) {
+    var s = '';
+    for (var k in params) {
+      var v = params[k];
+      if (v === null || v === undefined) {
+        continue;
+      }
+      if (s.length > 0) {
+        s += '&';
+      }
+      s += encodeURIComponent(k) + '=' + encodeURIComponent(v);
+    }
+    return s;
+  }
+
+  /**
+   * @param {string} urlString
+   * @return {*}
+   */
+  parseUrl(urlString) {
+    var a = document.createElement('a');
+    a.href = urlString;
+    return {
+      href: a.href,
+      protocol: a.protocol,
+      host: a.host,
+      hostname: a.hostname,
+      port: a.port == '0' ? '' : a.port,
+      pathname: a.pathname,
+      search: a.search,
+      hash: a.hash,
+      origin: a.protocol + '//' + a.host
+    };
   }
 
   /**
