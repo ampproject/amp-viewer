@@ -88,18 +88,18 @@ export class ViewerMessaging {
    */
   waitForHandshake_(targetOrigin) {
     log('awaitHandshake_');
-    const listener = function(event) {
-      log('message!', event);
+    const listener = e => {
+      log('message!', e);
       const target = this.ampIframe_.contentWindow;
-      if (event.origin == targetOrigin &&
-              this.isChannelOpen_(event.data) &&
-              (!event.source || event.source == target)) {
+      if (e.origin == targetOrigin &&
+          this.isChannelOpen_(e.data) &&
+          (!e.source || e.source == target)) {
         log(' messaging established with ', targetOrigin);
         this.win.removeEventListener('message', listener);
         const port = new WindowPortEmulator(this.win, targetOrigin, target);
-        this.completeHandshake_(port, event.data.requestid);
+        this.completeHandshake_(port, e.data.requestid);
       }
-    }.bind(this);
+    }
     this.win.addEventListener('message', listener);
   }
 
