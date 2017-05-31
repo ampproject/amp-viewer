@@ -29,16 +29,16 @@ const config = {
 };
 
 gulp.task('build', function() {
-  const bundler = browserify('./src/amp-viewer.js', {debug: true})
+  const bundler = browserify('./src/viewer.js', {debug: true})
      .transform(babelify, {
        global: true,
        ignore: /\/node_modules\/(?!amp-viewer-messaging\/)/
      });
 
   return bundler.bundle()
-      .pipe(source('src/amp-viewer.js'))
+      .pipe(source('src/viewer.js'))
       .pipe(buffer())
-      .pipe(rename('amp-viewer.js'))
+      .pipe(rename('viewer.js'))
       .pipe(gulp.dest('dist'));
 });
 

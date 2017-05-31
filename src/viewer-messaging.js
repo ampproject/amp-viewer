@@ -25,7 +25,7 @@ import {log} from '../utils/log';
 
 const CHANNEL_OPEN_MSG = 'channelOpen';
 
-export class AmpViewerHost {
+export class ViewerMessaging {
 
   /**
    * @param {!Window} win

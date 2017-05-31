@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {AmpViewerHost} from './amp-viewer-host';
+import {ViewerMessaging} from './viewer-messaging';
 import {log} from '../utils/log';
 
 /**
  * This file is a Viewer for AMP Documents.
  */
-class AmpViewer {
+class Viewer {
 
   /**
    * @param {!Window} win
@@ -29,8 +29,8 @@ class AmpViewer {
    * @param {string} ampOrigin the AMP page origin.
    */
   constructor(hostElement, ampUrl, ampOrigin) {
-    /** @private {AmpViewerHost} */
-    this.viewerHost_ = null;
+    /** @private {ViewerMessaging} */
+    this.viewerMessaging_ = null;
 
     /** @private {!Element} */
     this.hostElement_ = hostElement;
@@ -52,7 +52,7 @@ class AmpViewer {
     this.iframe_ = document.createElement('iframe');
     this.hostElement_.appendChild(this.iframe_);
 
-    this.viewerHost_ = new AmpViewerHost(
+    this.viewerMessaging_ = new ViewerMessaging(
       window,
       this.iframe_,
       this.ampOrigin_,
@@ -69,4 +69,4 @@ class AmpViewer {
     log('requestHandler_: ', incoming);
   }
 }
-window.AmpViewer = AmpViewer;
+window.Viewer = Viewer;
