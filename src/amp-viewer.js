@@ -49,15 +49,15 @@ class AmpViewer {
    */
   attach() {
     this.iframe_ = document.createElement('iframe');
+    this.hostElement_.appendChild(this.iframe_);
 
     this.viewerHost_ = new AmpViewerHost(
       window,
       this.iframe_,
       this.ampOrigin_,
       this.requestHandler_);
-
+      
     this.iframe_.src = this.ampUrl_;
-    this.hostElement_.appendChild(this.iframe_);
   }
 
   /**
