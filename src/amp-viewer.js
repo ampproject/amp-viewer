@@ -49,7 +49,6 @@ class AmpViewer {
    */
   attach() {
     this.iframe_ = document.createElement('iframe');
-   this.iframe_.src = this.ampUrl_;
 
     this.viewerHost_ = new AmpViewerHost(
       window,
@@ -57,6 +56,7 @@ class AmpViewer {
       this.ampOrigin_,
       this.requestHandler_);
 
+    this.iframe_.src = this.ampUrl_;
     this.hostElement_.appendChild(this.iframe_);
   }
 
