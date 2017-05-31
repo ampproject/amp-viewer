@@ -15,6 +15,7 @@
  */
 
 import {AmpViewerHost} from './amp-viewer-host';
+import {log} from '../utils/log';
 
 /**
  * This file is a Viewer for AMP Documents.
@@ -65,7 +66,7 @@ class AmpViewer {
    * TODO (chenshay): implement it.
    */
   requestHandler_(incoming) {
-    console.log('requestHandler_: ', incoming);
+    log('requestHandler_: ', incoming);
   }
 }
 window.AmpViewer = AmpViewer;

@@ -20,6 +20,7 @@ import {
   MessageType,
   WindowPortEmulator,
 } from 'amp-viewer-messaging/messaging';
+import {log} from '../utils/log';
 
 
 const CHANNEL_OPEN_MSG = 'channelOpen';
@@ -59,7 +60,7 @@ export class AmpViewerHost {
    * @private
    */
   initiateHandshake_() {
-    this.log('initiateHandshake_');
+    log('initiateHandshake_');
     if (this.ampIframe_) {
       const channel = new MessageChannel();
       let message = {
@@ -74,7 +75,7 @@ export class AmpViewerHost {
         const data = this.isWebview_ ? JSON.parse(e.data) : e.data;
         if (this.isChannelOpen_(data)) {
           this.win.clearInterval(this.pollingIntervalId_); //stop polling
-          this.log('messaging established!');
+          log('messaging established!');
           this.completeHandshake_(channel.port1, data.requestid);
         } else {
           this.messageHandler_(data.name, data.data, data.rsvp);
@@ -88,14 +89,14 @@ export class AmpViewerHost {
    * @private
    */
   waitForHandshake_(targetOrigin) {
-    this.log('awaitHandshake_');
+    log('awaitHandshake_');
     const listener = function(event) {
-      console.log('message!', event);
+      log('message!', event);
       const target = this.ampIframe_.contentWindow;
       if (event.origin == targetOrigin &&
               this.isChannelOpen_(event.data) &&
               (!event.source || event.source == target)) {
-        this.log(' messaging established with ', targetOrigin);
+        log(' messaging established with ', targetOrigin);
         this.win.removeEventListener('message', listener);
         const port = new WindowPortEmulator(this.win, targetOrigin, target);
         this.completeHandshake_(port, event.data.requestid);
@@ -117,7 +118,7 @@ export class AmpViewerHost {
     };
 
     message = this.isWebview_ ? JSON.stringify(message) : message;
-    this.log('posting Message', message);
+    log('posting Message', message);
     port./*OK*/postMessage(message);
 
     this.messaging_ = new Messaging(this.win, port);
@@ -145,16 +146,10 @@ export class AmpViewerHost {
    * @return {!Promise<*>|undefined}
    */
   sendRequest(type, data, awaitResponse) {
-    this.log('sendRequest');
+    log('sendRequest');
     if (!this.messaging_) {
       return;
     }
     return this.messaging_.sendRequest(type, data, awaitResponse);
   };
-
-  log() {
-    const var_args = Array.prototype.slice.call(arguments, 0);
-    var_args.unshift('[ViewerHost]');
-    console/*OK*/.log.apply(console, var_args);
-  }
 }
