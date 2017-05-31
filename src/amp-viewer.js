@@ -21,39 +21,47 @@ import {AmpViewerHost} from './amp-viewer-host';
  */
 class AmpViewer {
 
- /**
-  * @param {!Element} hostElement the element to attatch the iframe to.
-  * @param {string} ampUrl the AMP page url.
-  */
- constructor(hostElement, ampUrl) {
-  /** @private {AmpViewerHost} */
-  this.viewerHost_ = null;
+  /**
+   * @param {!Window} win
+   * @param {!Element} hostElement the element to attatch the iframe to.
+   * @param {string} ampUrl the AMP page url.
+   * @param {string} ampOrigin the AMP page origin.
+   */
+  constructor(hostElement, ampUrl, ampOrigin) {
+    /** @private {AmpViewerHost} */
+    this.viewerHost_ = null;
 
-  /** @private {!Element} */
-  this.hostElement_ = hostElement;
+    /** @private {!Element} */
+    this.hostElement_ = hostElement;
 
-  /** @private {string} */
-  this.ampUrl_ = ampUrl;
+    /** @private {string} */
+    this.ampUrl_ = ampUrl;
 
-  /** @private {?Element} */
-  this.iframe_ = null;
- }
+    /** @private {string} */
+    this.ampOrigin_ = ampOrigin;
 
- /**
-  * Attaches the AMP Doc Iframe to the Host Element.
-  */
- attach() {
-   this.iframe_ = document.createElement('iframe');
-   this.hostElement_.appendChild(this.iframe_);
+    /** @private {?Element} */
+    this.iframe_ = null;
+  }
+
+  /**
+   * Attaches the AMP Doc Iframe to the Host Element.
+   */
+  attach() {
+    this.iframe_ = document.createElement('iframe');
    this.iframe_.src = this.ampUrl_;
 
-   this.viewerHost_ = new AmpViewerHost(
-     this.hostElement_,
-     this.iframe_,
-     this.ampUrl_,
-     this.requestHandler_,
-     /* logs id */ 1);
- }
+    this.viewerHost_ = new AmpViewerHost(
+      window,
+      this.iframe_,
+      this.ampOrigin_,
+      this.requestHandler_);
 
+    this.hostElement_.appendChild(this.iframe_);
+  }
+
+  requestHandler_(incoming) {
+    console.log('requestHandler_: ', incoming);
+  }
 }
 window.AmpViewer = AmpViewer;

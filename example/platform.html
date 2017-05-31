@@ -97,8 +97,9 @@
 <script>
   function initViewer() {
     var viewerHost = document.getElementById('viewerHost');
-    var ampUrl = 'https://www.ampproject.org/';
-    var viewer = new AmpViewer(viewerHost, ampUrl);
+    var ampUrl = 'https://www-ampproject-org.cdn.ampproject.org/v/s/www.ampproject.org/?amp_js_v=0.1#origin=http://localhost:8000';
+    var ampOrigin = 'https://www-ampproject-org.cdn.ampproject.org';
+    var viewer = new AmpViewer(viewerHost, ampUrl, ampOrigin);
     viewer.attach();
   }
   window.onload = initViewer();
