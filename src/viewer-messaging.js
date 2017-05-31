@@ -20,6 +20,7 @@ import {
   MessageType,
   WindowPortEmulator,
 } from 'amp-viewer-messaging/messaging';
+import {messageHandler} from './message-handler';
 import {log} from '../utils/log';
 
 
@@ -31,19 +32,16 @@ export class ViewerMessaging {
    * @param {!Window} win
    * @param {!HTMLIFrameElement} ampIframe
    * @param {string} frameOrigin
-   * @param {function(string, *, boolean):(!Promise<*>|undefined)} messageHandler
    * @param {boolean=} opt_isWebview Should viewer initiate handshake w/ polling
    * @param {boolean=} opt_isHandshakePoll
    * looking at.
    */
-  constructor(win, ampIframe, frameOrigin, messageHandler, opt_isWebview,
+  constructor(win, ampIframe, frameOrigin, opt_isWebview,
     opt_isHandshakePoll) {
     /** @const {!Window} */
     this.win = win;
     /** @private {!HTMLIFrameElement} */
     this.ampIframe_ = ampIframe;
-    /** @private {function(string, *, boolean):(!Promise<*>|undefined)} */
-    this.messageHandler_ = messageHandler;
     /** @const {boolean} */
     this.isWebview_ = !!opt_isWebview;
 
@@ -78,7 +76,7 @@ export class ViewerMessaging {
           log('messaging established!');
           this.completeHandshake_(channel.port1, data.requestid);
         } else {
-          this.messageHandler_(data.name, data.data, data.rsvp);
+          messageHandler(data.name, data.data, data.rsvp);
         }
       }.bind(this);
     }
@@ -122,7 +120,7 @@ export class ViewerMessaging {
     port./*OK*/postMessage(message);
 
     this.messaging_ = new Messaging(this.win, port);
-    this.messaging_.setDefaultHandler(this.messageHandler_);
+    this.messaging_.setDefaultHandler(messageHandler);
 
     this.sendRequest('visibilitychange', {
       state: this.visibilityState_,

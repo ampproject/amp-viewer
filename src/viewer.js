@@ -15,7 +15,6 @@
  */
 
 import {ViewerMessaging} from './viewer-messaging';
-import {log} from '../utils/log';
 
 /**
  * This file is a Viewer for AMP Documents.
@@ -56,8 +55,7 @@ class Viewer {
     this.viewerMessaging_ = new ViewerMessaging(
       window,
       this.iframe_,
-      this.parseUrl(this.ampDocCachedUrl_).origin,
-      this.requestHandler_);
+      this.parseUrl(this.ampDocCachedUrl_).origin;
 
     this.iframe_.src = this.buildIframeSrc_();
     this.hostElement_.appendChild(this.iframe_);
@@ -67,6 +65,7 @@ class Viewer {
    * @return {string}
    */
   buildIframeSrc_() {
+    // TODO (chenshay): support more init params like visibilityState, etc.
     const initParams = {
       origin: this.parseUrl(window.location.href).origin,
     };
@@ -115,14 +114,6 @@ class Viewer {
       hash: a.hash,
       origin: a.protocol + '//' + a.host
     };
-  }
-
-  /**
-   * Place holder request handler. 
-   * TODO (chenshay): implement it.
-   */
-  requestHandler_(incoming) {
-    log('requestHandler_: ', incoming);
   }
 }
 window.Viewer = Viewer;
