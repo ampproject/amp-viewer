@@ -67,15 +67,20 @@ class Viewer {
    * @return {string}
    */
   buildIframeSrc_() {
+    const parsedViewerUrl = this.parseUrl(window.location.href);
+
     // TODO (chenshay): support more init params like visibilityState, etc.
     const initParams = {
-      origin: this.parseUrl(window.location.href).origin,
+      origin: parsedViewerUrl.origin,
     };
 
+    const protocolStr = parsedViewerUrl.protocol == 'https:' ? 's/' : '';
+
     return this.ampDocCachedUrl_ + 
-            '/v/s/' + 
+            '/v/' +
+            protocolStr + 
             this.ampDocUrl_ + 
-            '/?amp_js_v=0.1#' + 
+            '/?amp_js_v=0.1#' + // TODO (chenshay): make version configurable.
             this.paramsToStr(initParams);
   }
 

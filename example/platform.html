@@ -98,6 +98,7 @@
   function initViewer() {
     var viewerHost = document.getElementById('viewerHost');
     var ampDocUrl = 'www.ampproject.org';
+    //TODO (chenshay): only pass the ampDocUrl and compute the ampDocCachedUrl.
     var ampDocCachedUrl = 'https://www-ampproject-org.cdn.ampproject.org';
     var viewer = new Viewer(viewerHost, ampDocUrl, ampDocCachedUrl);
     viewer.attach();
