@@ -15,6 +15,7 @@
  */
 
 import {ViewerMessaging} from './viewer-messaging';
+import {log} from '../utils/log';
 
 /**
  * This file is a Viewer for AMP Documents.
@@ -57,7 +58,9 @@ class Viewer {
       this.iframe_,
       this.parseUrl(this.ampDocCachedUrl_).origin);
 
-    this.viewerMessaging_.start();
+    this.viewerMessaging_.start().then(()=>{
+      log('this.viewerMessaging_.start() Promise resolved !!!');
+    });
 
     this.iframe_.src = this.buildIframeSrc_();
     this.hostElement_.appendChild(this.iframe_);

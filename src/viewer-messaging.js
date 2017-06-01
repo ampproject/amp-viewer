@@ -44,14 +44,19 @@ export class ViewerMessaging {
 
   /**
    * @param {boolean=} opt_isHandshakePoll
+   * @return {!Promise}
    */
   start(opt_isHandshakePoll) {
     if (opt_isHandshakePoll) {
       /** @private {number} */
       this.pollingIntervalId_ = setInterval(this.initiateHandshake_.bind(
         this, this.intervalCtr) , 1000); //poll every second
+      return new Promise(resolve => {
+        /** @private {!Function} */
+        this.hanshakePollPromiseResolve_ = resolve;
+      });
     } else {
-      this.waitForHandshake_(this.frameOrigin_);
+      return this.waitForHandshake_(this.frameOrigin_);
     }
   }
 
@@ -74,7 +79,9 @@ export class ViewerMessaging {
         if (this.isChannelOpen_(data)) {
           clearInterval(this.pollingIntervalId_); //stop polling
           log('messaging established!');
-          this.completeHandshake_(channel.port1, data.requestid);
+          this.completeHandshake_(channel.port1, data.requestid).then(() => {
+            this.hanshakePollPromiseResolve_();
+          });
         } else {
           messageHandler(data.name, data.data, data.rsvp);
         }
@@ -84,28 +91,34 @@ export class ViewerMessaging {
 
   /**
    * @param {string} targetOrigin
+   * @return {!Promise}
    * @private
    */
   waitForHandshake_(targetOrigin) {
     log('awaitHandshake_');
-    const listener = e => {
-      log('message!', e);
-      const target = this.ampIframe_.contentWindow;
-      if (e.origin == targetOrigin &&
-          this.isChannelOpen_(e.data) &&
-          (!e.source || e.source == target)) {
-        log(' messaging established with ', targetOrigin);
-        this.win.removeEventListener('message', listener);
-        const port = new WindowPortEmulator(this.win, targetOrigin, target);
-        this.completeHandshake_(port, e.data.requestid);
+    return new Promise(resolve => {
+      const listener = e => {
+        log('message!', e);
+        const target = this.ampIframe_.contentWindow;
+        if (e.origin == targetOrigin &&
+            this.isChannelOpen_(e.data) &&
+            (!e.source || e.source == target)) {
+          log(' messaging established with ', targetOrigin);
+          this.win.removeEventListener('message', listener);
+          const port = new WindowPortEmulator(this.win, targetOrigin, target);
+          this.completeHandshake_(port, e.data.requestid).then(() => {
+            resolve();
+          });
+        }
       }
-    }
-    this.win.addEventListener('message', listener);
+      this.win.addEventListener('message', listener);
+    });
   }
 
   /**
    * @param {!MessagePort|!WindowPortEmulator} port
    * @param {string} requestId
+   * @return {!Promise}
    * @private
    */
   completeHandshake_(port, requestId) {
@@ -125,6 +138,8 @@ export class ViewerMessaging {
       state: this.visibilityState_,
       prerenderSize: this.prerenderSize,
     }, true);
+
+    return Promise.resolve();
   };
 
   /**
