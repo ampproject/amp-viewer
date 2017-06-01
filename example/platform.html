@@ -5,7 +5,7 @@
   <title>Viewer</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
   <link href='https://fonts.googleapis.com/css?family=Questrial' rel='stylesheet' type='text/css'>
-  <script src="../dist/amp-viewer.js"></script>
+  <script src="../dist/viewer.js"></script>
   <style>
     html, body {
       overflow: hidden;
@@ -97,8 +97,10 @@
 <script>
   function initViewer() {
     var viewerHost = document.getElementById('viewerHost');
-    var ampUrl = 'https://www.ampproject.org/';
-    var viewer = new AmpViewer(viewerHost, ampUrl);
+    var ampDocUrl = 'www.ampproject.org';
+    //TODO (chenshay): only pass the ampDocUrl and compute the ampDocCachedUrl.
+    var ampDocCachedUrl = 'https://www-ampproject-org.cdn.ampproject.org';
+    var viewer = new Viewer(viewerHost, ampDocUrl, ampDocCachedUrl);
     viewer.attach();
   }
   window.onload = initViewer();

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {
-  APP,
-  Messaging,
-  MessageType,
-  WindowPortEmulator,
-} from 'amp-viewer-messaging/messaging';
+import {log} from '../utils/log';
 
 
-export class AmpViewerHost {
+/**
+ * Place holder message handler. 
+ * TODO (chenshay): implement it.
+ */
+export function messageHandler(incoming) {
+  log('messageHandler: ', incoming);
 }
