@@ -72,7 +72,7 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  * @return {string} The curls encoded domain
  */
 export function constructCacheUrl(domain) {
-  var curlsEncoding = isEligibleForHumanReadableProxyEncoding_(domain) ?
+  let curlsEncoding = isEligibleForHumanReadableProxyEncoding_(domain) ?
       constructHumanReadableCurlsProxyDomain_(domain) :
       constructFallbackCurlsProxyDomain_(domain);
   if (curlsEncoding.length > MAX_DOMAIN_LABEL_LENGTH_) {
