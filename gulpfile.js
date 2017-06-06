@@ -15,60 +15,45 @@
  */
 
 const $$ = require('gulp-load-plugins')();
-const fs = require('fs-extra');
 const gulp = require('gulp');
-const browserify = require('browserify');
-const babelify = require('babelify');
 const del = require('del');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const rename = require('gulp-rename');
+const webpack = require('webpack');
+const config = require('./webpack.config');
+const WebpackDevServer = require("webpack-dev-server");
+const minimist = require('minimist');
+var argv = minimist(process.argv.slice(2), {boolean: ['strictBabelTransform']});
 
-const config = {
-  src: ['src/*.js'],
-};
-
-gulp.task('build', function() {
-  const bundler = browserify('./src/viewer.js', {debug: true})
-     .transform(babelify, {
-       global: true,
-       ignore: /\/node_modules\/(?!amp-viewer-messaging\/)/
-     });
-
-  return bundler.bundle()
-      .pipe(source('src/viewer.js'))
-      .pipe(buffer())
-      .pipe(rename('viewer.js'))
-      .pipe(gulp.dest('dist'));
-});
-
-gulp.task('clean', function() {
-  return del(['dist']);
-});
-
-function serve() {
-  var app = require('express')();
-  var webserver = require('gulp-webserver');
-
-  var host = 'localhost';
-  var port = process.env.PORT || 8000;
-  var server = gulp.src(process.cwd())
-      .pipe(webserver({
-        port,
-        host,
-        directoryListing: true,
-        livereload: true,
-        https: false,
-        middleware: [app],
-      }));
-
-  return server;
+if (argv.watch) {
+  config.watch = true;
 }
 
-gulp.task('default', function() {
-  serve();
-  return $$.watch(config.src, {ignoreInitial: false},
-      $$.batch(function(events, done) {
-        gulp.start('build', done);
-      }));
+
+const sources = ['src/**/*.js'];
+
+gulp.task('default', ['build']);
+gulp.task('watch', ['serve']);
+
+gulp.task('build', function(cb) {
+  webpack(config, function(err, stats) {
+    if(err) throw new $$.util.PluginError('webpack', err);
+    $$.util.log('[webpack]', stats.toString(config));
+    cb();
+  });
+});
+
+gulp.task('clean', function(cb) {
+  return del(['dist'], cb);
+});
+
+gulp.task('serve', function() {
+ // Start a webpack-dev-server
+  var compiler = webpack(config);
+
+  new WebpackDevServer(compiler, {})
+      .listen(8000, 'localhost', function(err) {
+        if (err) {
+          throw new $$.util.PluginError('webpack-dev-server', err);
+        }
+        $$.util.log('[webpack-dev-server]');
+      });
 });
