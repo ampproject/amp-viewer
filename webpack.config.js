@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    'amp-viewer': './src/amp-viewer.js',
+    'viewer': './src/viewer.js',
   },
   output: {
     filename: '[name].js',

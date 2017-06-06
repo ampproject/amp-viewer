@@ -17,9 +17,6 @@
 const $$ = require('gulp-load-plugins')();
 const gulp = require('gulp');
 const del = require('del');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const rename = require('gulp-rename');
 const webpack = require('webpack');
 const config = require('./webpack.config');
 const WebpackDevServer = require("webpack-dev-server");
@@ -34,6 +31,7 @@ if (argv.watch) {
 const sources = ['src/**/*.js'];
 
 gulp.task('default', ['build']);
+gulp.task('watch', ['serve']);
 
 gulp.task('build', function(cb) {
   webpack(config, function(err, stats) {
@@ -58,10 +56,4 @@ gulp.task('serve', function() {
         }
         $$.util.log('[webpack-dev-server]');
       });
-});
-
-gulp.task('watch', ['serve'], function(done) {
-  return $$.watch(sources, {ignoreInitial: false}, function() {
-    gulp.start('default', done);
-  });
 });
