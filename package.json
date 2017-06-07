@@ -6,14 +6,16 @@
     "babel-loader": "7.0.0",
     "babel-preset-env": "1.5.1",
     "del": "2.2.2",
+    "express": "^4.15.3",
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
     "gulp-load-plugins": "1.5.0",
     "gulp-util": "3.0.8",
     "minimist": "1.2.0",
     "punycode": "^2.1.0",
+    "run-sequence": "^1.2.2",
     "webpack": "2.6.1",
-    "webpack-dev-server": "2.4.5"
+    "webpack-dev-middleware": "1.10.2"
   },
   "dependencies": {
     "assert": "1.4.1"

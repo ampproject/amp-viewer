@@ -1,12 +1,13 @@
 const path = require('path');
 
 module.exports = {
+  watch: true,
   entry: {
     'viewer': './src/viewer.js',
   },
   output: {
     filename: '[name].js',
-    path: __dirname + '/dist'
+    path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
@@ -22,5 +23,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.resolve(__dirname, './example'),  // New
+    compress: true,
+    port: 8000,
   },
 }

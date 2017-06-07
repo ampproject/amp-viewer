@@ -16,28 +16,37 @@
 
 const $$ = require('gulp-load-plugins')();
 const gulp = require('gulp');
+const express = require('express');
 const del = require('del');
 const webpack = require('webpack');
 const config = require('./webpack.config');
-const WebpackDevServer = require("webpack-dev-server");
+const webpackDevMiddleware = require('webpack-dev-middleware');
 const minimist = require('minimist');
-var argv = minimist(process.argv.slice(2), {boolean: ['strictBabelTransform']});
-
-if (argv.watch) {
-  config.watch = true;
-}
+const runSequence = require('run-sequence');
+var argv = minimist(process.argv.slice(2));
 
 
 const sources = ['src/**/*.js'];
 
 gulp.task('default', ['build']);
-gulp.task('watch', ['serve']);
+gulp.task('watch', function(cb) {
+  argv.watch = true;
+  runSequence('serve', 'build', cb)
+});
 
 gulp.task('build', function(cb) {
-  webpack(config, function(err, stats) {
-    if(err) throw new $$.util.PluginError('webpack', err);
+  if (argv.watch) {
+    webpackConfig = Object.assign({watch: !!argv.watch}, config);
+  }
+
+  webpack(webpackConfig, function(err, stats) {
+    if(err) {
+      throw new $$.util.PluginError('webpack:error', err);
+    }
     $$.util.log('[webpack]', stats.toString(config));
-    cb();
+    if (!argv.watch) {
+      cb();
+    }
   });
 });
 
@@ -46,14 +55,14 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('serve', function() {
- // Start a webpack-dev-server
+  var app = express();
+  // Start a webpack-dev-server
   var compiler = webpack(config);
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: '/',
+  }));
 
-  new WebpackDevServer(compiler, {})
-      .listen(8000, 'localhost', function(err) {
-        if (err) {
-          throw new $$.util.PluginError('webpack-dev-server', err);
-        }
-        $$.util.log('[webpack-dev-server]');
-      });
+  app.listen(8000, function () {
+    console.log('Listening on port 8000!');
+  });
 });
