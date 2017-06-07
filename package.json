@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "amp-viewer-messaging": "1.0.1",
+    "amp-viewer-messaging": "1.0.2",
     "babel-cli": "6.24.1",
     "babel-core": "6.24.1",
     "babel-loader": "7.0.0",
@@ -11,6 +11,7 @@
     "gulp-load-plugins": "1.5.0",
     "gulp-util": "3.0.8",
     "minimist": "1.2.0",
+    "punycode": "^2.1.0",
     "webpack": "2.6.1",
     "webpack-dev-server": "2.4.5"
   },
