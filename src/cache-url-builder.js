@@ -32,15 +32,6 @@ const HAS_LTR_CHARS = new RegExp('[' + LTR_CHARS + ']');
 /** @type {RegExp} */
 const HAS_RTL_CHARS = new RegExp('[' + RTL_CHARS + ']');
 
-/** @type {RegExp} */
-const IS_PUNYCODE = /^xn--/;
-
-/** @type {RegExp} */
-const SEPARATORS = /\x2E|\u3002|\uFF0E|\uFF61/g;
-
-/** @type {RegExp} */
-const NON_ASCII = /[^ -~]/;
-
 /** @private {number} */
 const MAX_DOMAIN_LABEL_LENGTH_ = 63;
 
