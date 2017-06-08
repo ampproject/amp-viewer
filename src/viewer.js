@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import {constructViewerCacheUrl} from './amp-url-creator';
 import {ViewerMessaging} from './viewer-messaging';
 import {log} from '../utils/log';
+import {parseUrl} from '../utils/url';
 
 /**
  * This file is a Viewer for AMP Documents.
@@ -26,9 +28,8 @@ class Viewer {
    * @param {!Window} win
    * @param {!Element} hostElement the element to attatch the iframe to.
    * @param {string} ampDocUrl the AMP Document url.
-   * @param {string} ampDocCachedUrl the cached AMP Document url.
    */
-  constructor(hostElement, ampDocUrl, ampDocCachedUrl) {
+  constructor(hostElement, ampDocUrl) {
     /** @private {ViewerMessaging} */
     this.viewerMessaging_ = null;
 
@@ -37,9 +38,6 @@ class Viewer {
 
     /** @private {string} */
     this.ampDocUrl_ = ampDocUrl;
-
-    /** @private {string} */
-    this.ampDocCachedUrl_ = ampDocCachedUrl;
 
     /** @private {?Element} */
     this.iframe_ = null;
@@ -53,16 +51,18 @@ class Viewer {
     // TODO (chenshay): iframe_.setAttribute('scrolling', 'no')
     // to enable the scrolling workarounds for iOS.
 
+    const ampDocCachedUrl = this.buildIframeSrc_()
+
     this.viewerMessaging_ = new ViewerMessaging(
       window,
       this.iframe_,
-      this.parseUrl(this.ampDocCachedUrl_).origin);
+      parseUrl(ampDocCachedUrl).origin);
 
     this.viewerMessaging_.start().then(()=>{
       log('this.viewerMessaging_.start() Promise resolved !!!');
     });
 
-    this.iframe_.src = this.buildIframeSrc_();
+    this.iframe_.src = ampDocCachedUrl;
     this.hostElement_.appendChild(this.iframe_);
   }
 
@@ -70,60 +70,14 @@ class Viewer {
    * @return {string}
    */
   buildIframeSrc_() {
-    const parsedViewerUrl = this.parseUrl(window.location.href);
+    const parsedViewerUrl = parseUrl(window.location.href);
 
-    // TODO (chenshay): support more init params like visibilityState, etc.
+    // TODO (chenshay): create a place to set all the init params.
     const initParams = {
-      origin: parsedViewerUrl.origin,
+      origin: parsedViewerUrl.origin
     };
 
-    const protocolStr = parsedViewerUrl.protocol == 'https:' ? 's/' : '';
-
-    return this.ampDocCachedUrl_ + 
-            '/v/' +
-            protocolStr + 
-            this.ampDocUrl_ + 
-            '/?amp_js_v=0.1#' + // TODO (chenshay): make version configurable.
-            this.paramsToStr(initParams);
-  }
-
-  /**
-   * @param {*} params
-   * @return {string}
-   */
-  paramsToStr(params) {
-    var s = '';
-    for (var k in params) {
-      var v = params[k];
-      if (v === null || v === undefined) {
-        continue;
-      }
-      if (s.length > 0) {
-        s += '&';
-      }
-      s += encodeURIComponent(k) + '=' + encodeURIComponent(v);
-    }
-    return s;
-  }
-
-  /**
-   * @param {string} urlString
-   * @return {*}
-   */
-  parseUrl(urlString) {
-    var a = document.createElement('a');
-    a.href = urlString;
-    return {
-      href: a.href,
-      protocol: a.protocol,
-      host: a.host,
-      hostname: a.hostname,
-      port: a.port == '0' ? '' : a.port,
-      pathname: a.pathname,
-      search: a.search,
-      hash: a.hash,
-      origin: a.protocol + '//' + a.host
-    };
+    return constructViewerCacheUrl(this.ampDocUrl_, initParams);
   }
 }
 window.Viewer = Viewer;

@@ -15,7 +15,18 @@
  */
 
 
+import {parseUrl} from '../utils/url';
+
 const punycode = require('punycode');
+
+/** @private {string} The default AMP cache prefix to be used. */
+const DEFAULT_CACHE_AUTHORITY_ = 'cdn.ampproject.org';
+
+/**
+ * The default JavaScript version to be used for AMP viewer URLs.
+ * @private {string}
+ */
+const DEFAULT_VIEWER_JS_VERSION_ = '0.1';
 
 /** @type {string} */
 const LTR_CHARS =
@@ -34,6 +45,56 @@ const HAS_RTL_CHARS = new RegExp('[' + RTL_CHARS + ']');
 
 /** @private {number} */
 const MAX_DOMAIN_LABEL_LENGTH_ = 63;
+
+
+/**
+ * Constructs a Viewer cache url using these rules:
+ * https://developers.google.com/amp/cache/overview
+ * 
+ * Example:
+ * Input url 'http://ampproject.org' can return 
+ * 'https://www-ampproject-org.cdn.ampproject.org/v/s/www.ampproject.org/?amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000'
+ * 
+ * @param {string} url The complete publisher url.
+ * @param {object} initParams Params containing origin, etc.
+ * @param {string} opt_cacheUrlAuthority
+ * @param {string} opt_viewer_js_version
+ * @return {string} the Cache Url.
+ * @private
+ */
+export function constructViewerCacheUrl(url, initParams,
+  opt_cacheUrlAuthority, opt_viewer_js_version) {
+  const parsedUrl = parseUrl(url);
+  const cacheDomain = constructCacheDomainUrl_(url, opt_cacheUrlAuthority);
+  const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
+  const viewerJsVersion = opt_viewer_js_version ? opt_viewer_js_version :
+    DEFAULT_VIEWER_JS_VERSION_;
+
+  return cacheDomain + 
+          '/v/' +
+          protocolStr +
+          parsedUrl.host + 
+          '/?amp_js_v=' + viewerJsVersion +
+          '#' +
+          paramsToString_(initParams);
+}
+
+/**
+ * Constructs a cache domain url. For example:
+ * 
+ * Input url 'http://ampproject.org'
+ * will return  'https://www-ampproject-org.cdn.ampproject.org'
+ * 
+ * @param {string} url The complete publisher url.
+ * @param {string} opt_cacheUrlAuthority
+ * @return {string}
+ * @private
+ */
+function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
+  const cacheUrlAuthority = 
+    opt_cacheUrlAuthority ? opt_cacheUrlAuthority : DEFAULT_CACHE_AUTHORITY_;
+  return constructCacheDomain_(url) + '.' + cacheUrlAuthority;
+}
 
 /**
  * Constructs a curls domain following these instructions:
@@ -59,23 +120,23 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  * 2. Base32 encode the resulting hash. Set the domain prefix to the resulting
  *    string.
  *
- * @param {string} domain The publisher domain
+ * @param {string} url The complete publisher url.
  * @return {string} The curls encoded domain
+ * @private
  */
-export function constructCacheUrl(domain) {
-  // TODO(chenshay): Return the complete url.
-  let curlsEncoding = isEligibleForHumanReadableProxyEncoding_(domain) ?
-      constructHumanReadableCurlsProxyDomain_(domain) :
-      constructFallbackCurlsProxyDomain_(domain);
+function constructCacheDomain_(url) {
+  let curlsEncoding = isEligibleForHumanReadableCacheEncoding_(url) ?
+      constructHumanReadableCurlsCacheDomain_(url) :
+      constructFallbackCurlsCacheDomain_(url);
   if (curlsEncoding.length > MAX_DOMAIN_LABEL_LENGTH_) {
-    curlsEncoding = constructFallbackCurlsProxyDomain_(domain);
+    curlsEncoding = constructFallbackCurlsCacheDomain_(url);
   }
   return curlsEncoding;
 }
 
 /**
  * Determines whether the given domain can be validly encoded into a human
- * readable curls encoded proxy domain.  A domain is eligible as long as:
+ * readable curls encoded cache domain.  A domain is eligible as long as:
  *   It does not exceed 63 characters
  *   It does not contain a mix of right-to-left and left-to-right characters
  *   It contains a dot character
@@ -84,7 +145,7 @@ export function constructCacheUrl(domain) {
  * @return {boolean}
  * @private
  */
-function isEligibleForHumanReadableProxyEncoding_(domain) {
+function isEligibleForHumanReadableCacheEncoding_(domain) {
   const unicode = punycode.toUnicode(domain);
   return domain.length <= MAX_DOMAIN_LABEL_LENGTH_ &&
       !(HAS_LTR_CHARS.test(unicode) &&
@@ -93,7 +154,7 @@ function isEligibleForHumanReadableProxyEncoding_(domain) {
 }
 
 /**
- * Constructs a human readable curls encoded proxy domain using the following
+ * Constructs a human readable curls encoded cache domain using the following
  * algorithm:
  *   Convert domain from punycode to utf-8 (if applicable)
  *   Replace every '-' with '--'
@@ -104,7 +165,7 @@ function isEligibleForHumanReadableProxyEncoding_(domain) {
  * @return {string} The curls encoded domain
  * @private
  */
-function constructHumanReadableCurlsProxyDomain_(domain) {
+function constructHumanReadableCurlsCacheDomain_(domain) {
   domain = punycode.toUnicode(domain);
   domain = domain.split('-').join('--');
   domain = domain.split('.').join('-');
@@ -112,13 +173,40 @@ function constructHumanReadableCurlsProxyDomain_(domain) {
 }
 
 /**
- * Constructs a fallback curls encoded proxy domain by taking the SHA256 of
+ * Constructs a fallback curls encoded cache domain by taking the SHA256 of
  * the domain and base32 encoding it.
  *
  * @param {string} domain The publisher domain
  * @private
  */
-function constructFallbackCurlsProxyDomain_(domain) {
+function constructFallbackCurlsCacheDomain_(domain) {
   // TODO(chenshay) : Implement this.
   return domain;
+}
+
+/**
+ * Takes an object such as:
+ * {
+ *   origin: "http://localhost:8000",
+ *   prerenderSize: 1
+ * } 
+ * and converts it to: "origin=http%3A%2F%2Flocalhost%3A8000&prerenderSize=1"
+ * 
+ * @param {object} params
+ * @return {string}
+ * @private
+ */
+function paramsToString_(params) {
+  let str = '';
+  for (let key in params) {
+    let value = params[key];
+    if (value === null || value === undefined) {
+      continue;
+    }
+    if (str.length > 0) {
+      str += '&';
+    }
+    str += encodeURIComponent(key) + '=' + encodeURIComponent(value);
+  }
+  return str;
 }
