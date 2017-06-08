@@ -15,7 +15,18 @@
  */
 
 
+import {parseUrl} from '../utils/url';
+
 const punycode = require('punycode');
+
+/** @private {string} The default AMP cache prefix to be used. */
+const DEFAULT_PROXY_AUTHORITY_ = 'cdn.ampproject.org';
+
+/**
+ * The default JavaScript version to be used for AMP viewer URLs.
+ * @private {string}
+ */
+const DEFAULT_VIEWER_JS_VERSION_ = '0.1';
 
 /** @type {string} */
 const LTR_CHARS =
@@ -34,6 +45,55 @@ const HAS_RTL_CHARS = new RegExp('[' + RTL_CHARS + ']');
 
 /** @private {number} */
 const MAX_DOMAIN_LABEL_LENGTH_ = 63;
+
+
+/**
+ * Constructs a Viewer proxy url using these rules:
+ * https://developers.google.com/amp/cache/overview
+ * 
+ * Example:
+ * Input domain 'http://ampproject.org' can return 
+ * 'https://www-ampproject-org.cdn.ampproject.org/v/s/www.ampproject.org/?amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000'
+ * 
+ * @param {string} domain The publisher domain
+ * @param {string} protocol The publisher domain
+ * @param {object} initParams Params containing origin, etc.
+ * @param {string} opt_proxyUrlAuthority
+ * @param {string} opt_viewer_js_version
+ * @private
+ */
+export function constructViewerProxyUrl(domain, protocol, initParams,
+  opt_proxyUrlAuthority, opt_viewer_js_version) {
+  const proxyUrl = constructProxyUrl_(domain, opt_proxyUrlAuthority);
+  const protocolStr = protocol == 'https:' ? 's/' : '';
+  const viewerJsVersion = opt_viewer_js_version ? opt_viewer_js_version :
+    DEFAULT_VIEWER_JS_VERSION_;
+  const parsedDomain = parseUrl(domain);
+
+  return proxyUrl + 
+          '/v/' +
+          protocolStr +
+          parsedDomain.host + 
+          '/?amp_js_v=' + viewerJsVersion +
+          '#' +
+          paramsToString_(initParams);
+}
+
+/**
+ * Constructs a proxy url. For example:
+ * 
+ * Input domain 'http://ampproject.org'
+ * will return  'https://www-ampproject-org.cdn.ampproject.org'
+ * 
+ * @param {string} domain The publisher domain
+ * @param {string} opt_proxyUrlAuthority
+ * @private
+ */
+function constructProxyUrl_(domain, opt_proxyUrlAuthority) {
+  const proxyUrlAuthority = 
+    opt_proxyUrlAuthority ? opt_proxyUrlAuthority :DEFAULT_PROXY_AUTHORITY_;
+  return constructCacheDomain_(domain) + '.' + proxyUrlAuthority;
+}
 
 /**
  * Constructs a curls domain following these instructions:
@@ -61,9 +121,9 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  *
  * @param {string} domain The publisher domain
  * @return {string} The curls encoded domain
+ * @private
  */
-export function constructCacheUrl(domain) {
-  // TODO(chenshay): Return the complete url.
+function constructCacheDomain_(domain) {
   let curlsEncoding = isEligibleForHumanReadableProxyEncoding_(domain) ?
       constructHumanReadableCurlsProxyDomain_(domain) :
       constructFallbackCurlsProxyDomain_(domain);
@@ -121,4 +181,31 @@ function constructHumanReadableCurlsProxyDomain_(domain) {
 function constructFallbackCurlsProxyDomain_(domain) {
   // TODO(chenshay) : Implement this.
   return domain;
+}
+
+/**
+ * Takes an object such as:
+ * {
+ *   origin: "http://localhost:8000",
+ *   prerenderSize: 1
+ * } 
+ * and converts it to: "origin=http%3A%2F%2Flocalhost%3A8000&prerenderSize=1"
+ * 
+ * @param {object} params
+ * @return {string}
+ * @private
+ */
+function paramsToString_(params) {
+  var str = '';
+  for (var key in params) {
+    var value = params[key];
+    if (value === null || value === undefined) {
+      continue;
+    }
+    if (str.length > 0) {
+      str += '&';
+    }
+    str += encodeURIComponent(key) + '=' + encodeURIComponent(value);
+  }
+  return str;
 }
