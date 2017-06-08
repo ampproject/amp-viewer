@@ -59,17 +59,18 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  * @param {object} initParams Params containing origin, etc.
  * @param {string} opt_cacheUrlAuthority
  * @param {string} opt_viewer_js_version
+ * @return {string} the Cache Url.
  * @private
  */
 export function constructViewerCacheUrl(url, initParams,
   opt_cacheUrlAuthority, opt_viewer_js_version) {
   const parsedUrl = parseUrl(url);
-  const cacheUrl = constructCacheUrl_(url, opt_cacheUrlAuthority);
+  const cacheDomain = constructCacheDomainUrl_(url, opt_cacheUrlAuthority);
   const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
   const viewerJsVersion = opt_viewer_js_version ? opt_viewer_js_version :
     DEFAULT_VIEWER_JS_VERSION_;
 
-  return cacheUrl + 
+  return cacheDomain + 
           '/v/' +
           protocolStr +
           parsedUrl.host + 
@@ -79,16 +80,17 @@ export function constructViewerCacheUrl(url, initParams,
 }
 
 /**
- * Constructs a cache url. For example:
+ * Constructs a cache domain url. For example:
  * 
  * Input url 'http://ampproject.org'
  * will return  'https://www-ampproject-org.cdn.ampproject.org'
  * 
  * @param {string} url The complete publisher url.
  * @param {string} opt_cacheUrlAuthority
+ * @return {string}
  * @private
  */
-function constructCacheUrl_(url, opt_cacheUrlAuthority) {
+function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
   const cacheUrlAuthority = 
     opt_cacheUrlAuthority ? opt_cacheUrlAuthority : DEFAULT_CACHE_AUTHORITY_;
   return constructCacheDomain_(url) + '.' + cacheUrlAuthority;
