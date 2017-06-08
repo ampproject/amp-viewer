@@ -35,6 +35,7 @@ gulp.task('watch', function(cb) {
 });
 
 gulp.task('build', function(cb) {
+  var webpackConfig = config;
   if (argv.watch) {
     webpackConfig = Object.assign({watch: !!argv.watch}, config);
   }
