@@ -20,7 +20,7 @@ const express = require('express');
 const del = require('del');
 const webpack = require('webpack');
 const config = require('./webpack.config');
-const webpackDevMiddleware = require('webpack-dev-middleware');
+const WebpackDevServer = require('webpack-dev-server');
 const minimist = require('minimist');
 const runSequence = require('run-sequence');
 var argv = minimist(process.argv.slice(2));
@@ -35,6 +35,7 @@ gulp.task('watch', function(cb) {
 });
 
 gulp.task('build', function(cb) {
+  var webpackConfig = config;
   if (argv.watch) {
     webpackConfig = Object.assign({watch: !!argv.watch}, config);
   }
@@ -58,11 +59,14 @@ gulp.task('serve', function() {
   var app = express();
   // Start a webpack-dev-server
   var compiler = webpack(config);
-  app.use(webpackDevMiddleware(compiler, {
-    publicPath: '/',
-  }));
-
-  app.listen(8000, function () {
-    console.log('Listening on port 8000!');
-  });
+  new WebpackDevServer(compiler, {})
+      .listen(8000, 'localhost', function(err) {
+        if (err) {
+          throw new gutil.PluginError('webpack-dev-server', err);
+        }
+        // Server listening
+        $$.util.log('[webpack-dev-server]');
+        // keep the server alive or continue?
+        // callback();
+    });
 });
