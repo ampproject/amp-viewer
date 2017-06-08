@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {constructViewerProxyUrl} from './amp-url-creator';
+import {constructViewerCacheUrl} from './amp-url-creator';
 import {ViewerMessaging} from './viewer-messaging';
 import {log} from '../utils/log';
 import {parseUrl} from '../utils/url';
@@ -77,8 +77,7 @@ class Viewer {
       origin: parsedViewerUrl.origin
     };
 
-    return constructViewerProxyUrl(
-      this.ampDocUrl_, parseUrl(this.ampDocUrl_).protocol, initParams);
+    return constructViewerCacheUrl(this.ampDocUrl_, initParams);
   }
 }
 window.Viewer = Viewer;
