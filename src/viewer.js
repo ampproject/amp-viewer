@@ -51,23 +51,24 @@ class Viewer {
     // TODO (chenshay): iframe_.setAttribute('scrolling', 'no')
     // to enable the scrolling workarounds for iOS.
 
-    const ampDocCachedUrl = this.buildIframeSrc_()
+    this.buildIframeSrc_().then(function(ampDocCachedUrl) {
+      this.viewerMessaging_ = new ViewerMessaging(
+        window,
+        this.iframe_,
+        parseUrl(ampDocCachedUrl).origin);
 
-    this.viewerMessaging_ = new ViewerMessaging(
-      window,
-      this.iframe_,
-      parseUrl(ampDocCachedUrl).origin);
+      this.viewerMessaging_.start().then(()=>{
+        log('this.viewerMessaging_.start() Promise resolved !!!');
+      });
 
-    this.viewerMessaging_.start().then(()=>{
-      log('this.viewerMessaging_.start() Promise resolved !!!');
-    });
-
-    this.iframe_.src = ampDocCachedUrl;
-    this.hostElement_.appendChild(this.iframe_);
+      this.iframe_.src = ampDocCachedUrl;
+      this.hostElement_.appendChild(this.iframe_);
+    }.bind(this));
   }
 
   /**
    * @return {string}
+   * @return {!Promise}
    */
   buildIframeSrc_() {
     const parsedViewerUrl = parseUrl(window.location.href);
@@ -76,8 +77,14 @@ class Viewer {
     const initParams = {
       origin: parsedViewerUrl.origin
     };
-
-    return constructViewerCacheUrl(this.ampDocUrl_, initParams);
+    
+    return new Promise(resolve => {
+      constructViewerCacheUrl(this.ampDocUrl_, initParams).then(
+        function(viewerCacheUrl) {
+          resolve(viewerCacheUrl);
+        }
+      );
+    });
   }
 }
 window.Viewer = Viewer;
