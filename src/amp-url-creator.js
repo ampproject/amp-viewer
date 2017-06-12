@@ -71,7 +71,7 @@ export function constructViewerCacheUrl(url, initParams,
     DEFAULT_VIEWER_JS_VERSION_;
 
   return new Promise(resolve => {
-    constructCacheDomainUrl_(url, opt_cacheUrlAuthority).then(function(cacheDomain){
+    constructCacheDomainUrl_(url, opt_cacheUrlAuthority).then(cacheDomain => {
       resolve(
         cacheDomain + 
           '/v/' +
@@ -100,7 +100,7 @@ function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
   return new Promise(resolve => {
     const cacheUrlAuthority = 
       opt_cacheUrlAuthority ? opt_cacheUrlAuthority : DEFAULT_CACHE_AUTHORITY_;
-      constructCacheDomain_(url).then(function(cacheDomain){
+      constructCacheDomain_(url).then(cacheDomain => {
         resolve(cacheDomain + '.' + cacheUrlAuthority);
       });
   });
@@ -140,16 +140,12 @@ function constructCacheDomain_(url) {
     if (isEligibleForHumanReadableCacheEncoding_(url)) {
       const curlsEncoding = constructHumanReadableCurlsCacheDomain_(url);
       if (curlsEncoding.length > MAX_DOMAIN_LABEL_LENGTH_) {
-        constructFallbackCurlsCacheDomain_(url).then(function(fallbackUrl) {
-          resolve(fallbackUrl);
-        });
+        constructFallbackCurlsCacheDomain_(url).then(resolve);
       } else {
         resolve(curlsEncoding);
       }
     } else {
-      constructFallbackCurlsCacheDomain_(url).then(function(fallbackUrl) {
-        resolve(fallbackUrl);
-      });
+      constructFallbackCurlsCacheDomain_(url).then(resolve);
     }
   });
 }
@@ -202,36 +198,46 @@ function constructHumanReadableCurlsCacheDomain_(domain) {
  */
 function constructFallbackCurlsCacheDomain_(domain) {
   return new Promise(resolve => {
-    sha256(domain).then(function(digest) {
+    sha256_(domain).then(digest => {
       resolve(base32Encode_(digest));
     });
   });
 }
 
-function sha256(str) {
+/**
+ * @param {string} str The string to convert to sha256
+ * @return {!Promise}
+ * @private
+ */
+function sha256_(str) {
   // Transform the string into an arraybuffer.
-  const buffer = new TextEncoder("utf-8").encode(str);
-  return crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
-    return hex(hash);
+  const buffer = new TextEncoder('utf-8').encode(str);
+  return crypto.subtle.digest('SHA-256', buffer).then(hash => {
+    return hex_(hash);
   });
 }
 
-function hex(buffer) {
+/**
+ * @param {string} buffer
+ * @return {!Promise}
+ * @private
+ */
+function hex_(buffer) {
   let hexCodes = [];
   const view = new DataView(buffer);
   for (let i = 0; i < view.byteLength; i += 4) {
     // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
-    const value = view.getUint32(i)
+    const value = view.getUint32(i);
     // toString(16) will give the hex representation of the number without padding
-    const stringValue = value.toString(16)
+    const stringValue = value.toString(16);
     // Use concatenation and slice for padding
-    const padding = '00000000'
-    const paddedValue = (padding + stringValue).slice(-padding.length)
+    const padding = '00000000';
+    const paddedValue = (padding + stringValue).slice(-padding.length);
     hexCodes.push(paddedValue);
   }
 
   // Join all the hex strings into one
-  return hexCodes.join("");
+  return hexCodes.join('');
 }
 
 /**
@@ -287,7 +293,6 @@ function base32Encode_(hexString) {
   // https://tools.ietf.org/html/rfc4648
   const base32 = 'abcdefghijklmnopqrstuvwxyz234567';
   // Convert number (paddedString) from base16 to base32
-  // const recodedString = parseInt(paddedString, base16).toString(base32);
   const recodedString = recodeString_(paddedString, base16, base32);
 
   const bitsPerHexChar = 4;
