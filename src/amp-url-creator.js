@@ -287,13 +287,8 @@ function paramsToString_(params) {
 function base32Encode_(hexString) {
   const initialPadding = 'ffffffffff';
   const finalPadding = '000000';
-  const paddedString = initialPadding + hexString + finalPadding;
-  const base16 = '0123456789abcdef';
-  // We use the base32 character encoding defined here:
-  // https://tools.ietf.org/html/rfc4648
-  const base32 = 'abcdefghijklmnopqrstuvwxyz234567';
-  // Convert number (paddedString) from base16 to base32
-  const recodedString = recodeString_(paddedString, base16, base32);
+  const paddedHexString = initialPadding + hexString + finalPadding;
+  const encodedString = encode32_(paddedHexString);
 
   const bitsPerHexChar = 4;
   const bitsPerBase32Char = 5;
@@ -301,164 +296,60 @@ function base32Encode_(hexString) {
       initialPadding.length * bitsPerHexChar / bitsPerBase32Char;
   const numHexStringChars =
       Math.ceil(hexString.length * bitsPerHexChar / bitsPerBase32Char);
-  return recodedString.substr(numInitialPaddingChars, numHexStringChars);
+
+  const result = encodedString.substr(numInitialPaddingChars, numHexStringChars);
+  return encodedString.substr(numInitialPaddingChars, numHexStringChars);
 }
 
 /**
- * Converts a number from one numeric base to another.
- *
- * The bases are represented as strings, which list allowed digits.  Each digit
- * should be unique.
- *
- * The number is in human-readable format, most significant digit first, and is
- * a non-negative integer.  Base designators such as $, 0x, d, b or h (at end)
- * will be interpreted as digits, so avoid them.  Leading zeros will be trimmed.
- *
- * Note: for huge bases the result may be inaccurate because of overflowing
- * 64-bit doubles used by JavaScript for integer calculus.  This may happen
- * if the product of the number of digits in the input and output bases comes
- * close to 10^16, which is VERY unlikely (100M digits in each base), but
- * may be possible in the future unicode world.  (Unicode 3.2 has less than 100K
- * characters.  However, it reserves some more, close to 1M.)
- *
- * @param {string} number The number to convert.
- * @param {string} inputBase The numeric base the number is in (all digits).
- * @param {string} outputBase Requested numeric base.
- * @return {string} The converted number.
+ * We use the base32 character encoding defined here:
+ * https://tools.ietf.org/html/rfc4648#page-8
+ * 
+ * @param {string} paddedHexString 
+ * @return {string} the base32 string
  * @private
  */
-function recodeString_(number, inputBase, outputBase) {
-  if (outputBase == '') {
-    throw Error('Empty output base');
+function encode32_(paddedHexString) {
+  // Convert to binary.
+  let bytes = [];
+  paddedHexString.match(/.{1,2}/g).forEach((pair, i) => {
+    bytes[i] = parseInt(pair, 16);        
+  });
+
+  // Split into groups of 5 and convert to base32.
+  const base32 = 'abcdefghijklmnopqrstuvwxyz234567';
+  const leftover = bytes.length % 5;
+  let quanta = Math.floor((bytes.length / 5));
+  let parts = [];
+
+  if (leftover != 0) {
+    for (let i = 0; i < (5-leftover); i++) { bytes += '\x00'; }
+    quanta += 1;
   }
 
-  // Check if number is 0 (special case when we don't want to return '').
-  let isZero = true;
-  for (let i = 0, n = number.length; i < n; i++) {
-    if (number.charAt(i) != inputBase.charAt(0)) {
-      isZero = false;
-      break;
-    }
-  }
-  if (isZero) {
-    return outputBase.charAt(0);
-  }
-
-  const numberDigits = stringToArray_(number, inputBase);
-
-  const inputBaseSize = inputBase.length;
-  const outputBaseSize = outputBase.length;
-
-  // result = 0.
-  let result = [];
-
-  // For all digits of number, starting with the most significant
-  for (let i = numberDigits.length - 1; i >= 0; i--) {
-    // result *= number.base.
-    let carry = 0;
-    for (let j = 0, n = result.length; j < n; j++) {
-      let digit = result[j];
-      // This may overflow for huge bases.  See function comment.
-      digit = digit * inputBaseSize + carry;
-      if (digit >= outputBaseSize) {
-        const remainder = digit % outputBaseSize;
-        carry = (digit - remainder) / outputBaseSize;
-        digit = remainder;
-      } else {
-        carry = 0;
-      }
-      result[j] = digit;
-    }
-    while (carry) {
-      const remainder = carry % outputBaseSize;
-      result.push(remainder);
-      carry = (carry - remainder) / outputBaseSize;
-    }
-
-    // result += number[i].
-    carry = numberDigits[i];
-    let j = 0;
-    while (carry) {
-      if (j >= result.length) {
-        // Extend result with a leading zero which will be overwritten below.
-        result.push(0);
-      }
-      let digit = result[j];
-      digit += carry;
-      if (digit >= outputBaseSize) {
-        const remainder = digit % outputBaseSize;
-        carry = (digit - remainder) / outputBaseSize;
-        digit = remainder;
-      } else {
-        carry = 0;
-      }
-      result[j] = digit;
-      j++;
-    }
+  for (let i = 0; i < quanta; i++) {
+    parts.push(base32.charAt(bytes[i*5] >> 3));
+    parts.push(base32.charAt(((bytes[i*5] & 0x07) << 2)
+        | (bytes[i*5 + 1] >> 6)));
+    parts.push(base32.charAt(((bytes[i*5 + 1] & 0x3F) >> 1)));
+    parts.push(base32.charAt(((bytes[i*5 + 1] & 0x01) << 4)
+        | (bytes[i*5 + 2] >> 4)));
+    parts.push(base32.charAt(((bytes[i*5 + 2] & 0x0F) << 1)
+        | (bytes[i*5 + 3] >> 7)));
+    parts.push(base32.charAt(((bytes[i*5 + 3] & 0x7F) >> 2)));
+    parts.push(base32.charAt(((bytes[i*5 + 3] & 0x03) << 3)
+        | (bytes[i*5 + 4] >> 5)));
+    parts.push(base32.charAt(((bytes[i*5 + 4] & 0x1F))));
   }
 
-  return arrayToString_(result, outputBase);
-};
+  let replace = 0;
+  if (leftover == 1) replace = 6;
+  else if (leftover == 2) replace = 4;
+  else if (leftover == 3) replace = 3;
+  else if (leftover == 4) replace = 1;
 
-/**
- * Converts a string representation of a number to an array of digit values.
- *
- * More precisely, the digit values are indices into the number base, which
- * is represented as a string, which can either be user defined or one of the
- * BASE_xxx constants.
- *
- * Throws an Error if the number contains a digit not found in the base.
- *
- * @param {string} number The string to convert, most significant digit first.
- * @param {string} base Digits in the base.
- * @return {!Array<number>} Array of digit values, least significant digit
- *     first.
- * @private
- */
-function stringToArray_(number, base) {
-  let index = {};
-  for (let i = 0, n = base.length; i < n; i++) {
-    index[base.charAt(i)] = i;
-  }
-  let result = [];
-  for (let i = number.length - 1; i >= 0; i--) {
-    const character = number.charAt(i);
-    const digit = index[character];
-    if (typeof digit == 'undefined') {
-      throw Error(
-          'Number ' + number + ' contains a character not found in base ' +
-          base + ', which is ' + character);
-    }
-    result.push(digit);
-  }
-  return result;
-};
+  for (let i = 0; i < replace; i++) parts.pop();
+  for (let i = 0; i < replace; i++) parts.push('=');
 
-/**
- * Converts an array representation of a number to a string.
- *
- * More precisely, the elements of the input array are indices into the base,
- * which is represented as a string.
- *
- * Throws an Error if the number contains a digit which is outside the range
- * 0 ... base.length - 1.
- *
- * @param {Array<number>} number Array of digit values, least significant
- *     first.
- * @param {string} base Digits in the base.
- * @return {string} Number as a string, most significant digit first.
- * @private
- */
-function arrayToString_(number, base) {
-  const n = number.length;
-  const chars = [];
-  const baseSize = base.length;
-  for (let i = n - 1; i >= 0; i--) {
-    const digit = number[i];
-    if (digit >= baseSize || digit < 0) {
-      throw Error('Number ' + number + ' contains an invalid digit: ' + digit);
-    }
-    chars.push(base.charAt(digit));
-  }
-  return chars.join('');
-};
+  return parts.join('');
+}
