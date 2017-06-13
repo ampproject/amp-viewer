@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// TODO(chenshay) : Write tests once testing capabilites are hooked up for this project.
 
 import {parseUrl} from '../utils/url';
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as sinon from 'sinon';
 import {constructViewerCacheUrl, constructCacheDomain_} from '../src/amp-url-creator';
 
 const punycode = require('punycode');
