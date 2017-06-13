@@ -59,7 +59,7 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  * @param {object} initParams Params containing origin, etc.
  * @param {string} opt_cacheUrlAuthority
  * @param {string} opt_viewerJsVersion
- * @return {!Promise}
+ * @return {!Promise<string>}
  * @private
  */
 export function constructViewerCacheUrl(url, initParams,
@@ -96,7 +96,7 @@ export function constructViewerCacheUrl(url, initParams,
  * 
  * @param {string} url The complete publisher url.
  * @param {string} opt_cacheUrlAuthority
- * @return {!Promise}
+ * @return {!Promise<string>}
  * @private
  */
 function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
@@ -135,7 +135,7 @@ function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
  *
  * @param {string} url The complete publisher url.
  * @return {string} The curls encoded domain
- * @return {!Promise}
+ * @return {!Promise<string>}
  * @private
  */
 export function constructCacheDomain_(url) {
@@ -196,20 +196,20 @@ function constructHumanReadableCurlsCacheDomain_(domain) {
  * the domain and base32 encoding it.
  *
  * @param {string} domain The publisher domain
- * @return {!Promise}
+ * @return {!Promise<string>}
  * @private
  */
 function constructFallbackCurlsCacheDomain_(domain) {
   return new Promise(resolve => {
     sha256_(domain).then(digest => {
-      resolve(base32Encode_(digest));
+      resolve(encodeHexToBase32_(digest));
     });
   });
 }
 
 /**
  * @param {string} str The string to convert to sha256
- * @return {!Promise}
+ * @return {!Promise<string>}
  * @private
  */
 function sha256_(str) {
@@ -222,7 +222,7 @@ function sha256_(str) {
 
 /**
  * @param {string} buffer
- * @return {!Promise}
+ * @return {string}
  * @private
  */
 function hex_(buffer) {
@@ -278,7 +278,7 @@ function paramsToString_(params) {
    * @return {string} The base32 encoded string
    * @private
    */
-function base32Encode_(hexString) {
+function encodeHexToBase32_(hexString) {
   const initialPadding = 'ffffffffff';
   const finalPadding = '000000';
   const paddedHexString = initialPadding + hexString + finalPadding;
