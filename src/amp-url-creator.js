@@ -310,7 +310,6 @@ function base32Encode_(hexString) {
  * @private
  */
 function encode32_(paddedHexString) {
-  // Convert to binary.
   let bytes = [];
   paddedHexString.match(/.{1,2}/g).forEach((pair, i) => {
     bytes[i] = parseInt(pair, 16);        
