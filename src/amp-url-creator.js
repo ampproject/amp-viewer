@@ -268,17 +268,8 @@ function paramsToString_(params) {
 }
 
  /**
-   * Encodes a hex string in base 32 according to specs in RFC 4648 section 6.
-   * Unfortunately, our only conversion tool is recodeString_ which
-   * converts a string from base16 to base32 numerically, trimming off leading
-   * 0's in the process. We use baseN to perform a base32 encoding as follows:
-   *   Start with 256 bit sha encoded as a 64 char hex string
-   *   Append 24 bits (6 hex chars) for a total of 280, exactly 7 40-bit chunks
-   *   Prepend a 40-bit block of 1's (10 'f' chars) so that basen doesn't trim
-   *     the beginning when converting
-   *   Call basen
-   *   Trim the first 8 chars (the 40 1's)
-   *   Trim the last 4 chars
+   * Encodes a hex string in base 32 according to specs in RFC 4648 section 6:
+   * https://tools.ietf.org/html/rfc4648
    *
    * @param {string} hexString The hex string
    * @return {string} The base32 encoded string
