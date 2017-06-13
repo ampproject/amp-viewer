@@ -30,6 +30,10 @@
       background: #eee;
     }
 
+    .hidden {
+      display: none;
+    }
+
     header {
       position: absolute;
       z-index: 1;
@@ -83,24 +87,39 @@
     viewer.natural container iframe {
       height: 100%;
     }
+
+    ampdoc {
+      width: 100px;
+      height: 100px;
+      border: 2px solid red;
+      display: block;
+    }
   </style>
 </head>
+
 <body>
-  <viewer>
+  <viewer class='hidden'>
     <header>
       <h1>Viewer</h1>
     </header>
     <container id="viewerHost"></container>
   </viewer>
+  <ampdoc url="https://www.ampproject.org">
+    Click me I'm an AMP doc
+  </ampdoc>
 </body>
 
 <script>
-  function initViewer() {
+  var viewerEl = document.getElementsByTagName("viewer")[0];
+  var ampDocEl = document.getElementsByTagName("ampdoc")[0];
+  ampDocEl.onclick = openAmpDocInViewer;
+
+  function openAmpDocInViewer(e) {
+    var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
-    var ampDocUrl = 'https://www.ampproject.org';
     var viewer = new Viewer(viewerHost, ampDocUrl);
     viewer.attach();
+    viewerEl.classList.remove('hidden');
   }
-  window.onload = initViewer();
 </script>
 </html>
