@@ -19,11 +19,13 @@ const gulp = require('gulp');
 const express = require('express');
 const del = require('del');
 const webpack = require('webpack');
+const Karma = require('karma').Server;
 const config = require('./webpack.config');
 const WebpackDevServer = require('webpack-dev-server');
 const minimist = require('minimist');
 const runSequence = require('run-sequence');
-var argv = minimist(process.argv.slice(2));
+const argv = minimist(process.argv.slice(2));
+const karmaDefault = require('./karma.conf');
 
 
 const sources = ['src/**/*.js'];
@@ -69,4 +71,19 @@ gulp.task('serve', function() {
         // keep the server alive or continue?
         // callback();
     });
+});
+
+gulp.task('test', function(done) {
+  new Karma(karmaDefault, function(exitCode) {
+    $$.util.log($$.util.colors.yellow(
+        'Shutting down test responses server on localhost:31862'));
+    if (exitCode) {
+      var error = new Error(
+          $$.util.colors.red('Karma test failed (error code: ' + exitCode +
+              ')'));
+      done(error);
+    } else {
+      done();
+    }
+  }).start();
 });
