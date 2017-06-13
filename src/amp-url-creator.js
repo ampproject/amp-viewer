@@ -69,15 +69,19 @@ export function constructViewerCacheUrl(url, initParams,
   const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
   const viewerJsVersion = opt_viewerJsVersion ? opt_viewerJsVersion :
     DEFAULT_VIEWER_JS_VERSION_;
+  const path = parsedUrl.pathname.slice(-1) != '/' ? parsedUrl.pathname + '/' :
+    parsedUrl.pathname;
 
   return new Promise(resolve => {
-    constructCacheDomainUrl_(url, opt_cacheUrlAuthority).then(cacheDomain => {
+    constructCacheDomainUrl_(parsedUrl.host, opt_cacheUrlAuthority).then(cacheDomain => {
       resolve(
+        parsedUrl.protocol + '//' +
         cacheDomain + 
           '/v/' +
           protocolStr +
           parsedUrl.host + 
-          '/?amp_js_v=' + viewerJsVersion +
+          path +
+          '?amp_js_v=' + viewerJsVersion +
           '#' +
           paramsToString_(initParams)
       );
@@ -135,7 +139,7 @@ function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
  * @return {!Promise}
  * @private
  */
-function constructCacheDomain_(url) {
+export function constructCacheDomain_(url) {
   return new Promise(resolve => {
     if (isEligibleForHumanReadableCacheEncoding_(url)) {
       const curlsEncoding = constructHumanReadableCurlsCacheDomain_(url);
