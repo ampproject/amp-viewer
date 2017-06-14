@@ -112,14 +112,23 @@
 <script>
   var viewerEl = document.getElementsByTagName("viewer")[0];
   var ampDocEl = document.getElementsByTagName("ampdoc")[0];
-  ampDocEl.onclick = openAmpDocInViewer;
+  var viewer;
 
-  function openAmpDocInViewer(e) {
+  function initViewer() {
     var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
-    var viewer = new Viewer(viewerHost, ampDocUrl);
+    viewer = new Viewer(viewerHost, ampDocUrl, hideViewer);
+    ampDocEl.onclick = openAmpDocInViewer;
+  }
+
+  function hideViewer() {
+    viewerEl.classList.add('hidden');
+  }
+
+  function openAmpDocInViewer(e) {
     viewer.attach();
     viewerEl.classList.remove('hidden');
   }
+  window.onload = initViewer();
 </script>
 </html>

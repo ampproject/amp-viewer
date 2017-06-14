@@ -16,6 +16,7 @@
 
 import {constructViewerCacheUrl} from './amp-url-creator';
 import {ViewerMessaging} from './viewer-messaging';
+import {History} from './history';
 import {log} from '../utils/log';
 import {parseUrl} from '../utils/url';
 
@@ -28,8 +29,9 @@ class Viewer {
    * @param {!Window} win
    * @param {!Element} hostElement the element to attatch the iframe to.
    * @param {string} ampDocUrl the AMP Document url.
+   * @param {!Function} hideViewer method that hides the viewer.
    */
-  constructor(hostElement, ampDocUrl) {
+  constructor(hostElement, ampDocUrl, hideViewer) {
     /** @private {ViewerMessaging} */
     this.viewerMessaging_ = null;
 
@@ -41,6 +43,12 @@ class Viewer {
 
     /** @private {?Element} */
     this.iframe_ = null;
+
+    /** @private {!History} */
+    this.history_ = new History(this.unAttach.bind(this));
+
+    /** @private {!Function} */
+    this.hideViewer_ = hideViewer;
   }
 
   /**
@@ -63,6 +71,7 @@ class Viewer {
 
       this.iframe_.src = ampDocCachedUrl;
       this.hostElement_.appendChild(this.iframe_);
+      this.history_.pushState(ampDocCachedUrl);
     });
   }
 
@@ -85,6 +94,17 @@ class Viewer {
         }
       );
     });
+  }
+
+  /**
+   * Detaches the AMP Doc Iframe from the Host Element 
+   * and calls the hideViewer method.
+   */
+  unAttach() {
+    this.hideViewer_();
+    this.hostElement_.removeChild(this.iframe_);
+    this.iframe_ = null;
+    this.viewerMessaging_ = null;
   }
 }
 window.Viewer = Viewer;
