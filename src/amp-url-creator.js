@@ -75,14 +75,14 @@ export function constructViewerCacheUrl(url, initParams,
       resolve(
         'https://' +
         cacheDomain + 
-          '/v/' +
-          protocolStr +
-          parsedUrl.host + 
-          parsedUrl.pathname +
-          search +
-          'amp_js_v=' + viewerJsVersion +
-          '#' +
-          paramsToString_(initParams)
+        '/v/' +
+        protocolStr +
+        parsedUrl.host + 
+        parsedUrl.pathname +
+        search +
+        'amp_js_v=' + viewerJsVersion +
+        '#' +
+        paramsToString_(initParams)
       );
     });
   });
