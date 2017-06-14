@@ -125,9 +125,13 @@
     viewerEl.classList.add('hidden');
   }
 
+  function showViewer() {
+    viewerEl.classList.remove('hidden');
+  }
+
   function openAmpDocInViewer(e) {
     viewer.attach();
-    viewerEl.classList.remove('hidden');
+    showViewer();
   }
   window.onload = initViewer();
 </script>
