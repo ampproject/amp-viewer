@@ -68,7 +68,7 @@ class Viewer {
 
   /**
    * @return {string}
-   * @return {!Promise}
+   * @return {!Promise<string>}
    */
   buildIframeSrc_() {
     const parsedViewerUrl = parseUrl(window.location.href);
