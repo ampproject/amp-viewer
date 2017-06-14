@@ -68,17 +68,19 @@ export function constructViewerCacheUrl(url, initParams,
   const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
   const viewerJsVersion = opt_viewerJsVersion ? opt_viewerJsVersion :
     DEFAULT_VIEWER_JS_VERSION_;
+  const search = parsedUrl.search ? parsedUrl.search + '&' : '?';
 
   return new Promise(resolve => {
     constructCacheDomainUrl_(parsedUrl.host, opt_cacheUrlAuthority).then(cacheDomain => {
       resolve(
-        parsedUrl.protocol + '//' +
+        'https://' +
         cacheDomain + 
           '/v/' +
           protocolStr +
           parsedUrl.host + 
           parsedUrl.pathname +
-          '?amp_js_v=' + viewerJsVersion +
+          search +
+          'amp_js_v=' + viewerJsVersion +
           '#' +
           paramsToString_(initParams)
       );

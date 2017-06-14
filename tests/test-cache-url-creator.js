@@ -103,7 +103,13 @@ describe('Tests for CacheUrlCreator', () => {
 
   it('should compute constructViewerCacheUrl correctly', () => {
     return constructViewerCacheUrl('http://www.example.com/article/bla/la', initParams).then(output => {
-      expect(output).to.equal('http://www-example-com.cdn.ampproject.org/v/www.example.com/article/bla/la?amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000');
+      expect(output).to.equal('https://www-example-com.cdn.ampproject.org/v/www.example.com/article/bla/la?amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000');
+    });
+  });
+
+  it('should compute constructViewerCacheUrl correctly', () => {
+    return constructViewerCacheUrl('http://www.example.com/foo?amp=true', initParams).then(output => {
+      expect(output).to.equal('https://www-example-com.cdn.ampproject.org/v/www.example.com/foo?amp=true&amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000');
     });
   });
 });
