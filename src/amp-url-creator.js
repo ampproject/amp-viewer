@@ -58,25 +58,34 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  * @param {string} url The complete publisher url.
  * @param {object} initParams Params containing origin, etc.
  * @param {string} opt_cacheUrlAuthority
- * @param {string} opt_viewer_js_version
- * @return {string} the Cache Url.
+ * @param {string} opt_viewerJsVersion
+ * @return {!Promise<string>}
  * @private
  */
 export function constructViewerCacheUrl(url, initParams,
-  opt_cacheUrlAuthority, opt_viewer_js_version) {
+  opt_cacheUrlAuthority, opt_viewerJsVersion) {
   const parsedUrl = parseUrl(url);
-  const cacheDomain = constructCacheDomainUrl_(url, opt_cacheUrlAuthority);
   const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
-  const viewerJsVersion = opt_viewer_js_version ? opt_viewer_js_version :
+  const viewerJsVersion = opt_viewerJsVersion ? opt_viewerJsVersion :
     DEFAULT_VIEWER_JS_VERSION_;
+  const search = parsedUrl.search ? parsedUrl.search + '&' : '?';
 
-  return cacheDomain + 
-          '/v/' +
-          protocolStr +
-          parsedUrl.host + 
-          '/?amp_js_v=' + viewerJsVersion +
-          '#' +
-          paramsToString_(initParams);
+  return new Promise(resolve => {
+    constructCacheDomainUrl_(parsedUrl.host, opt_cacheUrlAuthority).then(cacheDomain => {
+      resolve(
+        'https://' +
+        cacheDomain + 
+        '/v/' +
+        protocolStr +
+        parsedUrl.host + 
+        parsedUrl.pathname +
+        search +
+        'amp_js_v=' + viewerJsVersion +
+        '#' +
+        paramsToString_(initParams)
+      );
+    });
+  });
 }
 
 /**
@@ -87,13 +96,17 @@ export function constructViewerCacheUrl(url, initParams,
  * 
  * @param {string} url The complete publisher url.
  * @param {string} opt_cacheUrlAuthority
- * @return {string}
+ * @return {!Promise<string>}
  * @private
  */
 function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
-  const cacheUrlAuthority = 
-    opt_cacheUrlAuthority ? opt_cacheUrlAuthority : DEFAULT_CACHE_AUTHORITY_;
-  return constructCacheDomain_(url) + '.' + cacheUrlAuthority;
+  return new Promise(resolve => {
+    const cacheUrlAuthority = 
+      opt_cacheUrlAuthority ? opt_cacheUrlAuthority : DEFAULT_CACHE_AUTHORITY_;
+      constructCacheDomain_(url).then(cacheDomain => {
+        resolve(cacheDomain + '.' + cacheUrlAuthority);
+      });
+  });
 }
 
 /**
@@ -122,16 +135,22 @@ function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
  *
  * @param {string} url The complete publisher url.
  * @return {string} The curls encoded domain
+ * @return {!Promise<string>}
  * @private
  */
-function constructCacheDomain_(url) {
-  let curlsEncoding = isEligibleForHumanReadableCacheEncoding_(url) ?
-      constructHumanReadableCurlsCacheDomain_(url) :
-      constructFallbackCurlsCacheDomain_(url);
-  if (curlsEncoding.length > MAX_DOMAIN_LABEL_LENGTH_) {
-    curlsEncoding = constructFallbackCurlsCacheDomain_(url);
-  }
-  return curlsEncoding;
+export function constructCacheDomain_(url) {
+  return new Promise(resolve => {
+    if (isEligibleForHumanReadableCacheEncoding_(url)) {
+      const curlsEncoding = constructHumanReadableCurlsCacheDomain_(url);
+      if (curlsEncoding.length > MAX_DOMAIN_LABEL_LENGTH_) {
+        constructFallbackCurlsCacheDomain_(url).then(resolve);
+      } else {
+        resolve(curlsEncoding);
+      }
+    } else {
+      constructFallbackCurlsCacheDomain_(url).then(resolve);
+    }
+  });
 }
 
 /**
@@ -177,11 +196,51 @@ function constructHumanReadableCurlsCacheDomain_(domain) {
  * the domain and base32 encoding it.
  *
  * @param {string} domain The publisher domain
+ * @return {!Promise<string>}
  * @private
  */
 function constructFallbackCurlsCacheDomain_(domain) {
-  // TODO(chenshay) : Implement this.
-  return domain;
+  return new Promise(resolve => {
+    sha256_(domain).then(digest => {
+      resolve(encodeHexToBase32_(digest));
+    });
+  });
+}
+
+/**
+ * @param {string} str The string to convert to sha256
+ * @return {!Promise<string>}
+ * @private
+ */
+function sha256_(str) {
+  // Transform the string into an arraybuffer.
+  const buffer = new TextEncoder('utf-8').encode(str);
+  return crypto.subtle.digest('SHA-256', buffer).then(hash => {
+    return hex_(hash);
+  });
+}
+
+/**
+ * @param {string} buffer
+ * @return {string}
+ * @private
+ */
+function hex_(buffer) {
+  let hexCodes = [];
+  const view = new DataView(buffer);
+  for (let i = 0; i < view.byteLength; i += 4) {
+    // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
+    const value = view.getUint32(i);
+    // toString(16) will give the hex representation of the number without padding
+    const stringValue = value.toString(16);
+    // Use concatenation and slice for padding
+    const padding = '00000000';
+    const paddedValue = (padding + stringValue).slice(-padding.length);
+    hexCodes.push(paddedValue);
+  }
+
+  // Join all the hex strings into one
+  return hexCodes.join('');
 }
 
 /**
@@ -209,4 +268,81 @@ function paramsToString_(params) {
     str += encodeURIComponent(key) + '=' + encodeURIComponent(value);
   }
   return str;
+}
+
+ /**
+   * Encodes a hex string in base 32 according to specs in RFC 4648 section 6:
+   * https://tools.ietf.org/html/rfc4648
+   *
+   * @param {string} hexString The hex string
+   * @return {string} The base32 encoded string
+   * @private
+   */
+function encodeHexToBase32_(hexString) {
+  const initialPadding = 'ffffffffff';
+  const finalPadding = '000000';
+  const paddedHexString = initialPadding + hexString + finalPadding;
+  const encodedString = encode32_(paddedHexString);
+
+  const bitsPerHexChar = 4;
+  const bitsPerBase32Char = 5;
+  const numInitialPaddingChars =
+      initialPadding.length * bitsPerHexChar / bitsPerBase32Char;
+  const numHexStringChars =
+      Math.ceil(hexString.length * bitsPerHexChar / bitsPerBase32Char);
+
+  const result = encodedString.substr(numInitialPaddingChars, numHexStringChars);
+  return encodedString.substr(numInitialPaddingChars, numHexStringChars);
+}
+
+/**
+ * We use the base32 character encoding defined here:
+ * https://tools.ietf.org/html/rfc4648#page-8
+ * 
+ * @param {string} paddedHexString 
+ * @return {string} the base32 string
+ * @private
+ */
+function encode32_(paddedHexString) {
+  let bytes = [];
+  paddedHexString.match(/.{1,2}/g).forEach((pair, i) => {
+    bytes[i] = parseInt(pair, 16);        
+  });
+
+  // Split into groups of 5 and convert to base32.
+  const base32 = 'abcdefghijklmnopqrstuvwxyz234567';
+  const leftover = bytes.length % 5;
+  let quanta = Math.floor((bytes.length / 5));
+  let parts = [];
+
+  if (leftover != 0) {
+    for (let i = 0; i < (5-leftover); i++) { bytes += '\x00'; }
+    quanta += 1;
+  }
+
+  for (let i = 0; i < quanta; i++) {
+    parts.push(base32.charAt(bytes[i*5] >> 3));
+    parts.push(base32.charAt(((bytes[i*5] & 0x07) << 2)
+        | (bytes[i*5 + 1] >> 6)));
+    parts.push(base32.charAt(((bytes[i*5 + 1] & 0x3F) >> 1)));
+    parts.push(base32.charAt(((bytes[i*5 + 1] & 0x01) << 4)
+        | (bytes[i*5 + 2] >> 4)));
+    parts.push(base32.charAt(((bytes[i*5 + 2] & 0x0F) << 1)
+        | (bytes[i*5 + 3] >> 7)));
+    parts.push(base32.charAt(((bytes[i*5 + 3] & 0x7F) >> 2)));
+    parts.push(base32.charAt(((bytes[i*5 + 3] & 0x03) << 3)
+        | (bytes[i*5 + 4] >> 5)));
+    parts.push(base32.charAt(((bytes[i*5 + 4] & 0x1F))));
+  }
+
+  let replace = 0;
+  if (leftover == 1) replace = 6;
+  else if (leftover == 2) replace = 4;
+  else if (leftover == 3) replace = 3;
+  else if (leftover == 4) replace = 1;
+
+  for (let i = 0; i < replace; i++) parts.pop();
+  for (let i = 0; i < replace; i++) parts.push('=');
+
+  return parts.join('');
 }
