@@ -29,9 +29,8 @@ class Viewer {
    * @param {!Window} win
    * @param {!Element} hostElement the element to attatch the iframe to.
    * @param {string} ampDocUrl the AMP Document url.
-   * @param {!Function} hideViewer method that hides the viewer.
    */
-  constructor(hostElement, ampDocUrl, hideViewer) {
+  constructor(hostElement, ampDocUrl) {
     /** @private {ViewerMessaging} */
     this.viewerMessaging_ = null;
 
@@ -46,9 +45,22 @@ class Viewer {
 
     /** @private {!History} */
     this.history_ = new History(this.unAttach.bind(this));
+  }
 
+  /**
+   * @param {!Function} hideViewer method that hides the viewer.
+   */
+  setViewerHider(hideViewer) {
     /** @private {!Function} */
     this.hideViewer_ = hideViewer;
+  }
+
+  /**
+   * Enables history Fragment for the init params.
+   */
+  enableHistoryFragment() {
+    /** @private {boolean} */
+    this.enableHistoryFragment_ = true;
   }
 
   /**
@@ -71,7 +83,7 @@ class Viewer {
 
       this.iframe_.src = ampDocCachedUrl;
       this.hostElement_.appendChild(this.iframe_);
-      this.history_.pushState(ampDocCachedUrl);
+      this.history_.pushState(ampDocCachedUrl, this.enableHistoryFragment_);
     });
   }
 
@@ -80,15 +92,8 @@ class Viewer {
    * @return {!Promise<string>}
    */
   buildIframeSrc_() {
-    const parsedViewerUrl = parseUrl(window.location.href);
-
-    // TODO (chenshay): create a place to set all the init params.
-    const initParams = {
-      origin: parsedViewerUrl.origin
-    };
-    
     return new Promise(resolve => {
-      constructViewerCacheUrl(this.ampDocUrl_, initParams).then(
+      constructViewerCacheUrl(this.ampDocUrl_, this.createInitParams_()).then(
         viewerCacheUrl => {
           resolve(viewerCacheUrl);
         }
@@ -96,12 +101,34 @@ class Viewer {
     });
   }
 
+
+  /**
+   * Computes the init params that will be used to create the AMP Cache URL.
+   * @return {object} the init params.
+   * @private
+    */
+  createInitParams_() {
+    const parsedViewerUrl = parseUrl(window.location.href);
+
+    // TODO (chenshay): set more init params.
+    const initParams = {
+      origin: parsedViewerUrl.origin,
+    };
+
+    if (this.enableHistoryFragment_) {
+      initParams['cap'] = 'fragment';
+    }
+
+    return initParams;
+  }
+  
+
   /**
    * Detaches the AMP Doc Iframe from the Host Element 
    * and calls the hideViewer method.
    */
   unAttach() {
-    this.hideViewer_();
+    if (this.hideViewer_) this.hideViewer_();
     this.hostElement_.removeChild(this.iframe_);
     this.iframe_ = null;
     this.viewerMessaging_ = null;

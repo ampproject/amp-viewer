@@ -117,7 +117,9 @@
   function initViewer() {
     var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
-    viewer = new Viewer(viewerHost, ampDocUrl, hideViewer);
+    viewer = new Viewer(viewerHost, ampDocUrl);
+    viewer.setViewerHider(hideViewer);
+    viewer.enableHistoryFragment();
     ampDocEl.onclick = openAmpDocInViewer;
   }
 

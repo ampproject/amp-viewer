@@ -22,13 +22,17 @@ import {log} from '../utils/log';
 export class History {
   /** 
    * @param {!Function} handleLastPop what to do on last Viewer history pop.
+   * @param {boolean} opt_enableHistoryFragment
    */
-  constructor(handleLastPop) {
+  constructor(handleLastPop, opt_enableHistoryFragment) {
     /** @private {!Array<string>} */
     this.stack_ = [];
 
     /** @private {!Function} */
     this.handleLastPop_ = handleLastPop;
+
+    /** @private {boolean} */
+    this.enableHistoryFragment_ = !!opt_enableHistoryFragment;
 
     this.init_();
   }
@@ -53,6 +57,7 @@ export class History {
    */
   pushState(url) {
     this.stack_.push(url);
-    window.history.pushState({urlPath: url}, '', '#ampf=' + url);
+    const urlStr = this.enableHistoryFragment_ ? '#ampf=' + url : '#' + url;
+    window.history.pushState({urlPath: url}, '', urlStr);
   }
 }
