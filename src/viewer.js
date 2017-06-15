@@ -51,7 +51,7 @@ class Viewer {
     // TODO (chenshay): iframe_.setAttribute('scrolling', 'no')
     // to enable the scrolling workarounds for iOS.
 
-    this.buildIframeSrc_().then(function(ampDocCachedUrl) {
+    this.buildIframeSrc_().then(ampDocCachedUrl => {
       this.viewerMessaging_ = new ViewerMessaging(
         window,
         this.iframe_,
@@ -63,7 +63,7 @@ class Viewer {
 
       this.iframe_.src = ampDocCachedUrl;
       this.hostElement_.appendChild(this.iframe_);
-    }.bind(this));
+    });
   }
 
   /**
@@ -80,7 +80,7 @@ class Viewer {
     
     return new Promise(resolve => {
       constructViewerCacheUrl(this.ampDocUrl_, initParams).then(
-        function(viewerCacheUrl) {
+        viewerCacheUrl => {
           resolve(viewerCacheUrl);
         }
       );
