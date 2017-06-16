@@ -95,10 +95,14 @@
 </body>
 
 <script>
+  function computeCid() {
+    return '123';
+  }
   function initViewer() {
     var viewerHost = document.getElementById('viewerHost');
     var ampDocUrl = 'https://www.ampproject.org';
     var viewer = new Viewer(viewerHost, ampDocUrl);
+    viewer.setComputeCidFn(computeCid);
     viewer.attach();
   }
   window.onload = initViewer();
