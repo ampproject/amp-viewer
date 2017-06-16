@@ -44,6 +44,23 @@ class Viewer {
   }
 
   /**
+   * @param {!Function} hideViewer method that hides the viewer.
+   */
+  setViewerHider(hideViewer) {
+    /** @private {!Function} */
+    this.hideViewer_ = hideViewer;
+  }
+
+  /**
+    * @param {?{function():string}} opt_computeCidFn method that computes the
+    *  CID and returns it as a string.
+    */
+  setComputeCidFn(computeCidFn) {
+    /** @private {?{function():string}} */
+    this.computeCidFn_ = computeCidFn;
+  }
+
+  /**
    * Attaches the AMP Doc Iframe to the Host Element.
    */
   attach() {
@@ -71,20 +88,46 @@ class Viewer {
    * @return {!Promise<string>}
    */
   buildIframeSrc_() {
-    const parsedViewerUrl = parseUrl(window.location.href);
-
-    // TODO (chenshay): create a place to set all the init params.
-    const initParams = {
-      origin: parsedViewerUrl.origin
-    };
-    
     return new Promise(resolve => {
-      constructViewerCacheUrl(this.ampDocUrl_, initParams).then(
+      constructViewerCacheUrl(this.ampDocUrl_, this.createInitParams_()).then(
         viewerCacheUrl => {
           resolve(viewerCacheUrl);
         }
       );
     });
+  }
+
+
+  /**
+   * Computes the init params that will be used to create the AMP Cache URL.
+   * @return {object} the init params.
+   * @private
+   */
+  createInitParams_() {
+    const parsedViewerUrl = parseUrl(window.location.href);
+
+    // TODO (chenshay): set more init params.
+    const initParams = {
+      'origin': parsedViewerUrl.origin,
+    };
+
+    if (this.computeCidFn_) {
+      initParams['cid'] = this.computeCidFn_();
+    }
+
+    return initParams;
+  }
+  
+
+  /**
+   * Detaches the AMP Doc Iframe from the Host Element 
+   * and calls the hideViewer method.
+   */
+  unAttach() {
+    if (this.hideViewer_) this.hideViewer_();
+    this.hostElement_.removeChild(this.iframe_);
+    this.iframe_ = null;
+    this.viewerMessaging_ = null;
   }
 }
 window.Viewer = Viewer;
