@@ -21,15 +21,13 @@ import {log} from '../utils/log';
  */
 export class History {
   /** 
-   * @param {!Function} handleLastPop what to do on last Viewer history pop.
+   * @param {!Function} handleChangeHistoryState what to do when the history
+   *  state changes.
    * @param {boolean} opt_enableHistoryFragment
    */
-  constructor(handleLastPop, opt_enableHistoryFragment) {
-    /** @private {!Array<string>} */
-    this.stack_ = [];
-
+  constructor(handleChangeHistoryState, opt_enableHistoryFragment) {
     /** @private {!Function} */
-    this.handleLastPop_ = handleLastPop;
+    this.handleChangeHistoryState_ = handleChangeHistoryState;
 
     /** @private {boolean} */
     this.enableHistoryFragment_ = !!opt_enableHistoryFragment;
@@ -43,11 +41,8 @@ export class History {
    */
   init_() {
     window.onpopstate = event => {
-      const popped = this.stack_.pop();
-      // If we're at the last Viewer history pop.
-      if (popped && !this.stack_.length) {
-        this.handleLastPop_();
-      }
+      const urlPath = event.state ? event.state.urlPath : null;
+      this.handleChangeHistoryState_(urlPath);
     };
   }
 
@@ -56,8 +51,8 @@ export class History {
    * @param {string} url The url to push onto the Viewer history.
    */
   pushState(url) {
-    this.stack_.push(url);
-    const urlStr = this.enableHistoryFragment_ ? '#ampf=' + url : '#' + url;
+    // TODO(chenshay) : implement logic of what gets pushed (#ampf, etc).
+    const urlStr = '#' + url;
     window.history.pushState({urlPath: url}, '', urlStr);
   }
 }

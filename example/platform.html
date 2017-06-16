@@ -118,9 +118,9 @@
     var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
     viewer = new Viewer(viewerHost, ampDocUrl);
-    viewer.setViewerHider(hideViewer);
+    viewer.setViewerShowAndHide(showViewer, hideViewer);
     viewer.enableHistoryFragment();
-    ampDocEl.onclick = openAmpDocInViewer;
+    ampDocEl.addEventListener('click', openAmpDocInViewer);
   }
 
   function hideViewer() {
@@ -131,7 +131,7 @@
     viewerEl.classList.remove('hidden');
   }
 
-  function openAmpDocInViewer(e) {
+  function openAmpDocInViewer() {
     viewer.attach();
     showViewer();
   }

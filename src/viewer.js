@@ -44,13 +44,16 @@ class Viewer {
     this.iframe_ = null;
 
     /** @private {!History} */
-    this.history_ = new History(this.unAttach.bind(this));
+    this.history_ = new History(this.handleChangeHistoryState_.bind(this));
   }
 
   /**
+   * @param {!Function} showViewer method that shows the viewer.
    * @param {!Function} hideViewer method that hides the viewer.
    */
-  setViewerHider(hideViewer) {
+  setViewerShowAndHide(showViewer, hideViewer) {
+    /** @private {!Function} */
+    this.showViewer_ = showViewer;
     /** @private {!Function} */
     this.hideViewer_ = hideViewer;
   }
@@ -83,7 +86,7 @@ class Viewer {
 
       this.iframe_.src = ampDocCachedUrl;
       this.hostElement_.appendChild(this.iframe_);
-      this.history_.pushState(ampDocCachedUrl, this.enableHistoryFragment_);
+      this.history_.pushState(ampDocCachedUrl);
     });
   }
 
@@ -121,7 +124,6 @@ class Viewer {
 
     return initParams;
   }
-  
 
   /**
    * Detaches the AMP Doc Iframe from the Host Element 
@@ -132,6 +134,18 @@ class Viewer {
     this.hostElement_.removeChild(this.iframe_);
     this.iframe_ = null;
     this.viewerMessaging_ = null;
+  }
+  
+  /**
+   * @return {?string} urlPath
+   * @private
+    */
+  handleChangeHistoryState_(urlPath) {
+    if (urlPath) {
+      if (this.showViewer_) this.showViewer_();
+    } else {
+      if (this.hideViewer_) this.hideViewer_();
+    }
   }
 }
 window.Viewer = Viewer;
