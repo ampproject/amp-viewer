@@ -83,7 +83,6 @@ class Viewer {
   }
 
   /**
-   * @return {string}
    * @return {!Promise<string>}
    */
   buildIframeSrc_() {
@@ -125,7 +124,7 @@ class Viewer {
   }
   
   /**
-   * @return {?string} urlPath
+   * @param {?string} urlPath
    * @private
     */
   handleChangeHistoryState_(urlPath) {
