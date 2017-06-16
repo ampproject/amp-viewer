@@ -40,10 +40,10 @@ export class History {
    * @private
    */
   init_() {
-    window.onpopstate = event => {
+    window.addEventListener('popstate', event => {
       const urlPath = event.state ? event.state.urlPath : null;
       this.handleChangeHistoryState_(urlPath);
-    };
+    });
   }
 
   /**
