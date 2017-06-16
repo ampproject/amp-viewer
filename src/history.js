@@ -23,14 +23,10 @@ export class History {
   /** 
    * @param {!Function} handleChangeHistoryState what to do when the history
    *  state changes.
-   * @param {boolean} opt_enableHistoryFragment
    */
-  constructor(handleChangeHistoryState, opt_enableHistoryFragment) {
+  constructor(handleChangeHistoryState) {
     /** @private {!Function} */
     this.handleChangeHistoryState_ = handleChangeHistoryState;
-
-    /** @private {boolean} */
-    this.enableHistoryFragment_ = !!opt_enableHistoryFragment;
 
     this.init_();
   }
@@ -51,8 +47,7 @@ export class History {
    * @param {string} url The url to push onto the Viewer history.
    */
   pushState(url) {
-    // TODO(chenshay) : implement logic of what gets pushed (#ampf, etc).
-    const urlStr = '#' + url;
+    const urlStr = '/amp/' + url;
     window.history.pushState({urlPath: url}, '', urlStr);
   }
 }

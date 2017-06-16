@@ -59,14 +59,6 @@ class Viewer {
   }
 
   /**
-   * Enables history Fragment for the init params.
-   */
-  enableHistoryFragment() {
-    /** @private {boolean} */
-    this.enableHistoryFragment_ = true;
-  }
-
-  /**
    * Attaches the AMP Doc Iframe to the Host Element.
    */
   attach() {
@@ -86,7 +78,7 @@ class Viewer {
 
       this.iframe_.src = ampDocCachedUrl;
       this.hostElement_.appendChild(this.iframe_);
-      this.history_.pushState(ampDocCachedUrl);
+      this.history_.pushState(this.ampDocUrl_);
     });
   }
 
@@ -117,10 +109,6 @@ class Viewer {
     const initParams = {
       origin: parsedViewerUrl.origin,
     };
-
-    if (this.enableHistoryFragment_) {
-      initParams['cap'] = 'fragment';
-    }
 
     return initParams;
   }
