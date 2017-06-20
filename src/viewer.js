@@ -16,6 +16,7 @@
 
 import {constructViewerCacheUrl} from './amp-url-creator';
 import {ViewerMessaging} from './viewer-messaging';
+import {History} from './history';
 import {log} from '../utils/log';
 import {parseUrl} from '../utils/url';
 
@@ -41,6 +42,20 @@ class Viewer {
 
     /** @private {?Element} */
     this.iframe_ = null;
+
+    /** @private {!History} */
+    this.history_ = new History(this.handleChangeHistoryState_.bind(this));
+  }
+
+  /**
+   * @param {!Function} showViewer method that shows the viewer.
+   * @param {!Function} hideViewer method that hides the viewer.
+   */
+  setViewerShowAndHide(showViewer, hideViewer) {
+    /** @private {!Function} */
+    this.showViewer_ = showViewer;
+    /** @private {!Function} */
+    this.hideViewer_ = hideViewer;
   }
 
   /**
@@ -63,28 +78,61 @@ class Viewer {
 
       this.iframe_.src = ampDocCachedUrl;
       this.hostElement_.appendChild(this.iframe_);
+      this.history_.pushState(this.ampDocUrl_);
     });
   }
 
   /**
-   * @return {string}
    * @return {!Promise<string>}
    */
   buildIframeSrc_() {
-    const parsedViewerUrl = parseUrl(window.location.href);
-
-    // TODO (chenshay): create a place to set all the init params.
-    const initParams = {
-      origin: parsedViewerUrl.origin
-    };
-    
     return new Promise(resolve => {
-      constructViewerCacheUrl(this.ampDocUrl_, initParams).then(
+      constructViewerCacheUrl(this.ampDocUrl_, this.createInitParams_()).then(
         viewerCacheUrl => {
           resolve(viewerCacheUrl);
         }
       );
     });
+  }
+
+
+  /**
+   * Computes the init params that will be used to create the AMP Cache URL.
+   * @return {object} the init params.
+   * @private
+    */
+  createInitParams_() {
+    const parsedViewerUrl = parseUrl(window.location.href);
+
+    // TODO (chenshay): set more init params.
+    const initParams = {
+      origin: parsedViewerUrl.origin,
+    };
+
+    return initParams;
+  }
+
+  /**
+   * Detaches the AMP Doc Iframe from the Host Element 
+   * and calls the hideViewer method.
+   */
+  unAttach() {
+    if (this.hideViewer_) this.hideViewer_();
+    this.hostElement_.removeChild(this.iframe_);
+    this.iframe_ = null;
+    this.viewerMessaging_ = null;
+  }
+  
+  /**
+   * @param {?string} urlPath
+   * @private
+    */
+  handleChangeHistoryState_(urlPath) {
+    if (urlPath) {
+      if (this.showViewer_) this.showViewer_();
+    } else {
+      if (this.hideViewer_) this.hideViewer_();
+    }
   }
 }
 window.Viewer = Viewer;
