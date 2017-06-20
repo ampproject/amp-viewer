@@ -117,7 +117,8 @@
   function initViewer() {
     var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
-    viewer = new Viewer(viewerHost, ampDocUrl);
+    var referrer = 'http://localhost:8000/';
+    viewer = new Viewer(viewerHost, ampDocUrl, referrer);
     viewer.setViewerShowAndHide(showViewer, hideViewer);
     ampDocEl.addEventListener('click', openAmpDocInViewer);
   }
