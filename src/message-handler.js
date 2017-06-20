@@ -19,8 +19,10 @@ import {log} from '../utils/log';
 
 /**
  * Place holder message handler. 
- * TODO (chenshay): implement it.
+ * @param {string} name
+ * @param {object} data
+ * @param {boolean} rsvp
  */
-export function messageHandler(incoming) {
-  log('messageHandler: ', incoming);
+export function messageHandler(name, data, rsvp) {
+  log('messageHandler: ', name, data, rsvp);
 }

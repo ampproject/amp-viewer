@@ -57,18 +57,34 @@ class Viewer {
   /**
    * @param {!Function} showViewer method that shows the viewer.
    * @param {!Function} hideViewer method that hides the viewer.
+   * @param {!Function} isViewerHidden method that hides the viewer.
    */
-  setViewerShowAndHide(showViewer, hideViewer) {
+  setViewerShowAndHide(showViewer, hideViewer, isViewerHidden) {
     /** @private {!Function} */
     this.showViewer_ = showViewer;
     /** @private {!Function} */
     this.hideViewer_ = hideViewer;
+    /** @private {!Function} */
+    this.isViewerHidden_ = isViewerHidden;
+  }
+
+  /**
+   * @return {boolean} true if the viewer has already been loaded.
+   * @private
+   */
+  isLoaded_() {
+    return !!this.iframe_ && !!this.viewerMessaging_;
   }
 
   /**
    * Attaches the AMP Doc Iframe to the Host Element.
    */
   attach() {
+    if (this.isLoaded_()) {
+      this.history_.pushState(this.ampDocUrl_);
+      return;
+    }
+
     this.iframe_ = document.createElement('iframe');
     // TODO (chenshay): iframe_.setAttribute('scrolling', 'no')
     // to enable the scrolling workarounds for iOS.
@@ -81,6 +97,7 @@ class Viewer {
 
       this.viewerMessaging_.start().then(()=>{
         log('this.viewerMessaging_.start() Promise resolved !!!');
+        this.registerHandlers_();
       });
 
       this.iframe_.src = ampDocCachedUrl;
@@ -102,17 +119,17 @@ class Viewer {
     });
   }
 
-
   /**
    * Computes the init params that will be used to create the AMP Cache URL.
    * @return {object} the init params.
    * @private
-    */
+   */
   createInitParams_() {
     const parsedViewerUrl = parseUrl(window.location.href);
 
     const initParams = {
       'origin': parsedViewerUrl.origin,
+      'history': 1,
     };
 
     if (this.referrer_) initParams['referrer'] = this.referrer_;
@@ -136,14 +153,57 @@ class Viewer {
   }
   
   /**
-   * @param {?string} urlPath
+   * @param {boolean} isBack true if back button was hit. false otherwise.
+   * @param {boolean} isLastBack true if back button was hit and viewer should close.
+   * @param {number} opt_stackIndex
    * @private
     */
-  handleChangeHistoryState_(urlPath) {
-    if (urlPath) {
-      if (this.showViewer_) this.showViewer_();
-    } else {
-      if (this.hideViewer_) this.hideViewer_();
+  handleChangeHistoryState_(isBack, isLastBack, opt_stackIndex) {
+    if (isBack) {
+      this.viewerMessaging_.sendRequest(
+        'historyPopped', 
+        {'newStackIndex': opt_stackIndex - 1}, 
+        true
+      );
+      if (isLastBack && this.hideViewer_) this.hideViewer_();
+    } 
+    else {
+      if (this.showViewer_ && this.isViewerHidden_ && this.isViewerHidden_()) {
+        this.showViewer_();
+      }
+    }
+  }
+
+  /**
+   * Register the messaging event handlers.
+   * @private
+   */
+  registerHandlers_() {
+    if (this.viewerMessaging_) {
+      this.viewerMessaging_.registerHandler(
+        'pushHistory', this.messageHandler_.bind(this));
+      this.viewerMessaging_.registerHandler(
+        'popHistory', this.messageHandler_.bind(this));
+    }
+  }
+
+  /**
+   * Place holder message handler. 
+   * TODO (chenshay): implement it.
+   * @param {string} name
+   * @param {*} data
+   * @param {boolean} rsvp
+   */
+  messageHandler_(name, data, rsvp) {
+    log('messageHandler: ', name, data, rsvp);
+    switch(name) {
+      case 'pushHistory':
+        this.history_.pushState(this.ampDocUrl_, data);
+        return Promise.resolve();
+      case 'popHistory':
+        this.history_.popState();
+        return Promise.resolve();
+      default:
     }
   }
 }

@@ -143,6 +143,18 @@ export class ViewerMessaging {
   };
 
   /**
+   * Registers a method that will handle requests sent to the specified
+   * message name.
+   * @param {string} messageName The name of the message to handle.
+   * @param {!RequestHandler} requestHandler
+   */
+  registerHandler(messageName, requestHandler) {
+    if (this.messaging_) {
+      this.messaging_.registerHandler(messageName, requestHandler);
+    }
+  }
+
+  /**
    * @param {*} eventData
    * @return {boolean}
    * @private

@@ -28,6 +28,9 @@ export class History {
     /** @private {!Function} */
     this.handleChangeHistoryState_ = handleChangeHistoryState;
 
+    /** @private {number} */
+    this.currentStateId_ = 0;
+
     this.init_();
   }
 
@@ -37,17 +40,75 @@ export class History {
    */
   init_() {
     window.addEventListener('popstate', event => {
-      const urlPath = event.state ? event.state.urlPath : null;
-      this.handleChangeHistoryState_(urlPath);
+      const state = event.state;
+      if (!state) {
+        this.decreaseCurrentStateId();
+        this.handleChangeHistoryState_(true /* isBack */, true /* isLastBack */, null);
+        return;
+      }
+
+      const poppedStateId = (typeof state.stateId !== 'undefined') ? state.stateId : null;
+      const poppedStackIndex = (typeof state.stackIndex !== 'undefined') ? state.stackIndex : null;
+
+      const isBack = this.isBack_(poppedStateId);
+      if (isBack) {
+        this.decreaseCurrentStateId();
+      } else {
+        this.increaseCurrentStateId();
+      }
+      this.handleChangeHistoryState_(isBack, false /* isLastBack */, poppedStackIndex);
     });
+  }
+
+  /**
+   * Updates the history state.
+   */
+  decreaseCurrentStateId() {
+    this.currentStateId_--;
+  }
+
+  /**
+   * Updates the history state.
+   */
+  increaseCurrentStateId() {
+    this.currentStateId_++;
+  }
+
+  /**
+   * @param {number} poppedStateId id of the popped history state.
+   * @return {boolean} true if back button was hit.
+   * @private
+   */
+  isBack_(poppedStateId) {
+    return this.currentStateId_ > poppedStateId;
   }
 
   /**
    * Init the onpopstate listener.
    * @param {string} url The url to push onto the Viewer history.
+   * @param {object} opt_data
    */
-  pushState(url) {
+  pushState(url, opt_data) {
+    this.increaseCurrentStateId();
+    let stateData = {
+      urlPath: url,
+      stateId: this.currentStateId_ // id of the current history state.
+    };
+    if (opt_data && typeof opt_data.stackIndex !== 'undefined') {
+      // history index that the AMP doc uses.
+      stateData.stackIndex = opt_data.stackIndex;
+    } 
+
+    // The url should have /amp/ + url added to it. For example:
+    // example.com -> example.com/amp/https://www.ampproject.org
     const urlStr = '/amp/' + url;
-    window.history.pushState({urlPath: url}, '', urlStr);
+    window.history.pushState(stateData, '', urlStr);
+  }
+
+  /**
+   * Pop the history state.
+   */
+  popState() {
+    window.history.back();
   }
 }
