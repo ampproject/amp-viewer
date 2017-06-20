@@ -47,7 +47,9 @@ export class History {
         return;
       }
 
+      // The popped browser history state id.
       const poppedStateId = (typeof state.stateId !== 'undefined') ? state.stateId : null;
+      // History index that the AMP doc uses.
       const poppedStackIndex = (typeof state.stackIndex !== 'undefined') ? state.stackIndex : null;
 
       const isBack = this.isBack_(poppedStateId);

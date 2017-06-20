@@ -57,7 +57,7 @@ class Viewer {
   /**
    * @param {!Function} showViewer method that shows the viewer.
    * @param {!Function} hideViewer method that hides the viewer.
-   * @param {!Function} isViewerHidden method that hides the viewer.
+   * @param {!Function} isViewerHidden method that determines if viewer is hidden.
    */
   setViewerShowAndHide(showViewer, hideViewer, isViewerHidden) {
     /** @private {!Function} */
