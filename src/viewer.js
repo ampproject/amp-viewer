@@ -129,7 +129,7 @@ class Viewer {
 
     const initParams = {
       'origin': parsedViewerUrl.origin,
-      'history': 1,
+      'cap': 'history',
     };
 
     if (this.referrer_) initParams['referrer'] = this.referrer_;
