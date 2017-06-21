@@ -15,6 +15,7 @@
  */
 
 import {log} from '../utils/log';
+import {parseUrl} from '../utils/url';
 
 /**
  * This file manages history for the Viewer.
@@ -64,8 +65,11 @@ export class History {
     } 
 
     // The url should have /amp/ + url added to it. For example:
-    // example.com -> example.com/amp/https://www.ampproject.org
-    const urlStr = '/amp/' + url;
+    // example.com -> example.com/amp/s/www.ampproject.org
+    const parsedUrl = parseUrl(url);
+    let urlStr = '/amp/';
+    if (parsedUrl.protocol == 'https:') urlStr += 's/';
+    urlStr += parsedUrl.host;
     history.pushState(stateData, '', urlStr);
   }
 
