@@ -26,11 +26,11 @@ import {parseUrl} from '../utils/url';
 class Viewer {
 
   /**
-   * @param {!Window} win
    * @param {!Element} hostElement the element to attatch the iframe to.
    * @param {string} ampDocUrl the AMP Document url.
+   * @param {string} opt_referrer.
    */
-  constructor(hostElement, ampDocUrl) {
+  constructor(hostElement, ampDocUrl, opt_referrer) {
     /** @private {ViewerMessaging} */
     this.viewerMessaging_ = null;
 
@@ -39,6 +39,9 @@ class Viewer {
 
     /** @private {string} */
     this.ampDocUrl_ = ampDocUrl;
+
+    /** @private {string} */
+    this.referrer_ = opt_referrer;
 
     /** @private {?Element} */
     this.iframe_ = null;
@@ -108,6 +111,8 @@ class Viewer {
     const initParams = {
       origin: parsedViewerUrl.origin,
     };
+
+    if (this.referrer_) initParams.referrer = this.referrer_;
 
     return initParams;
   }
