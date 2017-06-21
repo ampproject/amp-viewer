@@ -18,9 +18,9 @@ import {
   APP,
   Messaging,
   MessageType,
+  RequestHandler,
   WindowPortEmulator,
 } from 'amp-viewer-messaging/messaging';
-import {messageHandler} from './message-handler';
 import {log} from '../utils/log';
 
 
@@ -32,14 +32,17 @@ export class ViewerMessaging {
    * @param {!Window} win
    * @param {!HTMLIFrameElement} ampIframe
    * @param {string} frameOrigin
+   * @param {!RequestHandler} messageHandler
    */
-  constructor(win, ampIframe, frameOrigin) {
+  constructor(win, ampIframe, frameOrigin, messageHandler) {
     /** @const {!Window} */
     this.win = win;
     /** @private {!HTMLIFrameElement} */
     this.ampIframe_ = ampIframe;
     /** @private {string} */
     this.frameOrigin_ = frameOrigin;
+    /** @private {!RequestHandler} */
+    this.messageHandler_ = messageHandler;
   }
 
   /**
@@ -83,7 +86,7 @@ export class ViewerMessaging {
             this.hanshakePollPromiseResolve_();
           });
         } else {
-          messageHandler(data.name, data.data, data.rsvp);
+          this.messageHandler_(data.name, data.data, data.rsvp);
         }
       }
     }
@@ -132,7 +135,7 @@ export class ViewerMessaging {
     port./*OK*/postMessage(message);
 
     this.messaging_ = new Messaging(this.win, port);
-    this.messaging_.setDefaultHandler(messageHandler);
+    this.messaging_.setDefaultHandler(this.messageHandler_);
 
     this.sendRequest('visibilitychange', {
       state: this.visibilityState_,
@@ -141,18 +144,6 @@ export class ViewerMessaging {
 
     return Promise.resolve();
   };
-
-  /**
-   * Registers a method that will handle requests sent to the specified
-   * message name.
-   * @param {string} messageName The name of the message to handle.
-   * @param {!RequestHandler} requestHandler
-   */
-  registerHandler(messageName, requestHandler) {
-    if (this.messaging_) {
-      this.messaging_.registerHandler(messageName, requestHandler);
-    }
-  }
 
   /**
    * @param {*} eventData

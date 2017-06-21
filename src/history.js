@@ -28,9 +28,6 @@ export class History {
     /** @private {!Function} */
     this.handleChangeHistoryState_ = handleChangeHistoryState;
 
-    /** @private {number} */
-    this.currentStateId_ = 0;
-
     this.init_();
   }
 
@@ -42,47 +39,14 @@ export class History {
     window.addEventListener('popstate', event => {
       const state = event.state;
       if (!state) {
-        this.decreaseCurrentStateId();
-        this.handleChangeHistoryState_(true /* isBack */, true /* isLastBack */, null);
+        this.handleChangeHistoryState_(true /* isLastBack */, null);
         return;
       }
 
-      // The popped browser history state id.
-      const poppedStateId = (typeof state.stateId !== 'undefined') ? state.stateId : null;
       // History index that the AMP doc uses.
-      const poppedStackIndex = (typeof state.stackIndex !== 'undefined') ? state.stackIndex : null;
-
-      const isBack = this.isBack_(poppedStateId);
-      if (isBack) {
-        this.decreaseCurrentStateId();
-      } else {
-        this.increaseCurrentStateId();
-      }
-      this.handleChangeHistoryState_(isBack, false /* isLastBack */, poppedStackIndex);
+      const poppedAmpHistoryIndex = state.stackIndex !== undefined ? state.stackIndex : null;
+      this.handleChangeHistoryState_(false /* isLastBack */, poppedAmpHistoryIndex);
     });
-  }
-
-  /**
-   * Updates the history state.
-   */
-  decreaseCurrentStateId() {
-    this.currentStateId_--;
-  }
-
-  /**
-   * Updates the history state.
-   */
-  increaseCurrentStateId() {
-    this.currentStateId_++;
-  }
-
-  /**
-   * @param {number} poppedStateId id of the popped history state.
-   * @return {boolean} true if back button was hit.
-   * @private
-   */
-  isBack_(poppedStateId) {
-    return this.currentStateId_ > poppedStateId;
   }
 
   /**
@@ -91,12 +55,10 @@ export class History {
    * @param {object} opt_data
    */
   pushState(url, opt_data) {
-    this.increaseCurrentStateId();
     let stateData = {
-      urlPath: url,
-      stateId: this.currentStateId_ // id of the current history state.
+      urlPath: url
     };
-    if (opt_data && typeof opt_data.stackIndex !== 'undefined') {
+    if (opt_data && opt_data.stackIndex !== undefined) {
       // history index that the AMP doc uses.
       stateData.stackIndex = opt_data.stackIndex;
     } 
@@ -104,13 +66,20 @@ export class History {
     // The url should have /amp/ + url added to it. For example:
     // example.com -> example.com/amp/https://www.ampproject.org
     const urlStr = '/amp/' + url;
-    window.history.pushState(stateData, '', urlStr);
+    history.pushState(stateData, '', urlStr);
   }
 
   /**
-   * Pop the history state.
+   * Go back to the previous history state.
    */
-  popState() {
-    window.history.back();
+  goBack() {
+    history.back();
+  }
+
+  /**
+   * Go forward to the next history state.
+   */
+  goForward() {
+    history.forward();
   }
 }
