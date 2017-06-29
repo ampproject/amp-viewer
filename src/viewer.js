@@ -94,7 +94,7 @@ class Viewer {
         window,
         this.iframe_,
         parseUrl(ampDocCachedUrl).origin,
-        this.messageHandler.bind(this));
+        this.messageHandler_.bind(this));
 
       this.viewerMessaging_.start().then(()=>{
         log('this.viewerMessaging_.start() Promise resolved !!!');
@@ -154,16 +154,17 @@ class Viewer {
   
   /**
    * @param {boolean} isLastBack true if back button was hit and viewer should hide.
-   * @param {number} opt_poppedAmpHistoryIndex The AMP History Index that was just popped.
+   * @param {boolean} isAMP true if going to AMP document.
+   * @param {number|undefined} opt_poppedAmpHistoryIndex The AMP History Index that was just popped.
    * @private
     */
-  handleChangeHistoryState_(isLastBack, opt_poppedAmpHistoryIndex) {
-    if (this.showViewer_ && this.isViewerHidden_ && this.isViewerHidden_()) {
-      this.showViewer_();
+  handleChangeHistoryState_(isLastBack, isAMP, opt_poppedAmpHistoryIndex) {
+    if (isLastBack) {
+      if (this.hideViewer_) this.hideViewer_();
       return;
     }
-    if (isLastBack && this.hideViewer_) {
-      this.hideViewer_();
+    if (isAMP && this.showViewer_ && this.isViewerHidden_ && this.isViewerHidden_()) {
+      this.showViewer_();
       return;
     }
     this.viewerMessaging_.sendRequest(
@@ -182,8 +183,9 @@ class Viewer {
    * @param {*} data
    * @param {boolean} rsvp
    * @return {!Promise<*>|undefined}
+   * @private
    */
-  messageHandler(name, data, rsvp) {
+  messageHandler_(name, data, rsvp) {
     log('messageHandler: ', name, data, rsvp);
     switch(name) {
       case 'pushHistory':

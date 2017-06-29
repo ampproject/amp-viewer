@@ -40,13 +40,17 @@ export class History {
     window.addEventListener('popstate', event => {
       const state = event.state;
       if (!state) {
-        this.handleChangeHistoryState_(true /* isLastBack */, null);
+        this.handleChangeHistoryState_(
+          true /* isLastBack */, 
+          false /* isAMP */, 
+          undefined /* History index that the AMP doc uses */);
         return;
       }
 
-      // History index that the AMP doc uses.
-      const poppedAmpHistoryIndex = state.stackIndex !== undefined ? state.stackIndex : null;
-      this.handleChangeHistoryState_(false /* isLastBack */, poppedAmpHistoryIndex);
+      this.handleChangeHistoryState_(
+        false /* isLastBack */, 
+        !!state.isAMP, 
+        state.stackIndex /* History index that the AMP doc uses */);
     });
   }
 
@@ -57,15 +61,17 @@ export class History {
    */
   pushState(url, opt_data) {
     let stateData = {
-      urlPath: url
+      urlPath: url,
+      isAMP: true
     };
     if (opt_data && opt_data.stackIndex !== undefined) {
-      // history index that the AMP doc uses.
+      // History index that the AMP doc uses.
       stateData.stackIndex = opt_data.stackIndex;
     } 
 
     // The url should have /amp/ + url added to it. For example:
     // example.com -> example.com/amp/s/www.ampproject.org
+    // TODO(chenshay): Include path & query parameters.
     const parsedUrl = parseUrl(url);
     let urlStr = '/amp/';
     if (parsedUrl.protocol == 'https:') urlStr += 's/';
