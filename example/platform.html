@@ -118,7 +118,8 @@
     var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
     var referrer = 'http://localhost:8000/';
-    viewer = new Viewer(viewerHost, ampDocUrl, referrer);
+    var prerender = true; // Can be true, false, or undefined.
+    viewer = new Viewer(viewerHost, ampDocUrl, referrer, prerender);
     viewer.setViewerShowAndHide(showViewer, hideViewer);
     ampDocEl.addEventListener('click', openAmpDocInViewer);
   }
