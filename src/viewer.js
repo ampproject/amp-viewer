@@ -29,7 +29,7 @@ class Viewer {
    * @param {!Element} hostElement the element to attatch the iframe to.
    * @param {string} ampDocUrl the AMP Document url.
    * @param {string} opt_referrer
-   * @param {string} opt_prerender
+   * @param {boolean|undefined} opt_prerender
    */
   constructor(hostElement, ampDocUrl, opt_referrer, opt_prerender) {
     /** @private {ViewerMessaging} */
