@@ -55,9 +55,8 @@ export class History {
   /**
    * Init the onpopstate listener.
    * @param {string} url The url to push onto the Viewer history.
-   * @param {object} opt_data
    */
-  pushState(url, opt_data) {
+  pushState(url) {
     let stateData = {
       urlPath: url,
       isAMP: true
