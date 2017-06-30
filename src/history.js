@@ -42,15 +42,13 @@ export class History {
       if (!state) {
         this.handleChangeHistoryState_(
           true /* isLastBack */, 
-          false /* isAMP */, 
-          undefined /* History index that the AMP doc uses */);
+          false /* isAMP */);
         return;
       }
 
       this.handleChangeHistoryState_(
         false /* isLastBack */, 
-        !!state.isAMP, 
-        state.stackIndex /* History index that the AMP doc uses */);
+        !!state.isAMP);
     });
   }
 
@@ -64,10 +62,6 @@ export class History {
       urlPath: url,
       isAMP: true
     };
-    if (opt_data && opt_data.stackIndex !== undefined) {
-      // History index that the AMP doc uses.
-      stateData.stackIndex = opt_data.stackIndex;
-    } 
 
     // The url should have /amp/ + url added to it. For example:
     // example.com -> example.com/amp/s/www.ampproject.org

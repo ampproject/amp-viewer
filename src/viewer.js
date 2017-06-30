@@ -155,26 +155,16 @@ class Viewer {
   /**
    * @param {boolean} isLastBack true if back button was hit and viewer should hide.
    * @param {boolean} isAMP true if going to AMP document.
-   * @param {number|undefined} opt_poppedAmpHistoryIndex The AMP History Index that was just popped.
    * @private
     */
-  handleChangeHistoryState_(isLastBack, isAMP, opt_poppedAmpHistoryIndex) {
+  handleChangeHistoryState_(isLastBack, isAMP) {
     if (isLastBack) {
       if (this.hideViewer_) this.hideViewer_();
       return;
     }
     if (isAMP && this.showViewer_ && this.isViewerHidden_ && this.isViewerHidden_()) {
       this.showViewer_();
-      return;
     }
-    this.viewerMessaging_.sendRequest(
-      'historyPopped', 
-      // The back button was hit while a lightbox or sidebar is open.
-      // We subtract 1 from opt_poppedAmpHistoryIndex to tell the AMP
-      // page to go back to the previous state (close the lightbox/sidebar).
-      {'newStackIndex': opt_poppedAmpHistoryIndex - 1}, 
-      false
-    );
   }
 
   /**
@@ -194,8 +184,15 @@ class Viewer {
       case 'popHistory':
         this.history_.goBack();
         return Promise.resolve();
+      case 'cancelFullOverlay':
+      case 'documentLoaded':
+      case 'documentHeight':
+      case 'prerenderComplete':
+      case 'requestFullOverlay':
+      case 'scroll':
+        return Promise.resolve();
       default:
-        return undefined;
+        return Promise.reject(name + ' Message is not supported!');
     }
   }
 }
