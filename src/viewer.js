@@ -28,9 +28,10 @@ class Viewer {
   /**
    * @param {!Element} hostElement the element to attatch the iframe to.
    * @param {string} ampDocUrl the AMP Document url.
-   * @param {string} opt_referrer.
+   * @param {string} opt_referrer
+   * @param {boolean|undefined} opt_prerender
    */
-  constructor(hostElement, ampDocUrl, opt_referrer) {
+  constructor(hostElement, ampDocUrl, opt_referrer, opt_prerender) {
     /** @private {ViewerMessaging} */
     this.viewerMessaging_ = null;
 
@@ -42,6 +43,9 @@ class Viewer {
 
     /** @private {string} */
     this.referrer_ = opt_referrer;
+
+    /** @private {boolean|undefined} */
+    this.prerender_ = opt_prerender;
 
     /** @private {?Element} */
     this.iframe_ = null;
@@ -107,12 +111,15 @@ class Viewer {
   createInitParams_() {
     const parsedViewerUrl = parseUrl(window.location.href);
 
-    // TODO (chenshay): set more init params.
     const initParams = {
-      origin: parsedViewerUrl.origin,
+      'origin': parsedViewerUrl.origin,
     };
 
-    if (this.referrer_) initParams.referrer = this.referrer_;
+    if (this.referrer_) initParams['referrer'] = this.referrer_;
+    if (this.prerender_) {
+      initParams['visibilityState'] = 'prerender';
+      initParams['prerenderSize'] = 1;
+    }
 
     return initParams;
   }
