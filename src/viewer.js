@@ -112,16 +112,13 @@ class Viewer {
     const parsedViewerUrl = parseUrl(window.location.href);
 
     const initParams = {
-      origin: parsedViewerUrl.origin,
+      'origin': parsedViewerUrl.origin,
     };
 
-    if (this.referrer_) initParams.referrer = this.referrer_;
+    if (this.referrer_) initParams['referrer'] = this.referrer_;
     if (this.prerender_) {
-      initParams.visibilityState = 'prerender';
-      initParams.prerenderSize = 1;
-    }
-    if (this.prerender_ != undefined && !this.prerender_) {
-      initParams.prerenderSize = 0;
+      initParams['visibilityState'] = 'prerender';
+      initParams['prerenderSize'] = 1;
     }
 
     return initParams;
