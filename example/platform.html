@@ -113,25 +113,22 @@
   var viewerEl = document.getElementsByTagName("viewer")[0];
   var ampDocEl = document.getElementsByTagName("ampdoc")[0];
   var viewer;
-
   function initViewer() {
     var ampDocUrl = ampDocEl.getAttribute('url');
     var viewerHost = document.getElementById('viewerHost');
-    var referrer = 'http://localhost:8000/';
-    var prerender = true; // Can be true, false, or undefined.
-    viewer = new Viewer(viewerHost, ampDocUrl, referrer, prerender);
-    viewer.setViewerShowAndHide(showViewer, hideViewer);
+    viewer = new Viewer(viewerHost, ampDocUrl);
+    viewer.setViewerShowAndHide(showViewer, hideViewer, isViewerHidden);
     ampDocEl.addEventListener('click', openAmpDocInViewer);
   }
-
   function hideViewer() {
     viewerEl.classList.add('hidden');
   }
-
   function showViewer() {
     viewerEl.classList.remove('hidden');
   }
-
+  function isViewerHidden() {
+    return viewerEl.classList.contains('hidden');
+  }
   function openAmpDocInViewer() {
     viewer.attach();
     showViewer();

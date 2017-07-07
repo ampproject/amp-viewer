@@ -15,6 +15,7 @@
  */
 
 import {log} from '../utils/log';
+import {parseUrl} from '../utils/url';
 
 /**
  * This file manages history for the Viewer.
@@ -37,8 +38,17 @@ export class History {
    */
   init_() {
     window.addEventListener('popstate', event => {
-      const urlPath = event.state ? event.state.urlPath : null;
-      this.handleChangeHistoryState_(urlPath);
+      const state = event.state;
+      if (!state) {
+        this.handleChangeHistoryState_(
+          true /* isLastBack */, 
+          false /* isAMP */);
+        return;
+      }
+
+      this.handleChangeHistoryState_(
+        false /* isLastBack */, 
+        !!state.isAMP);
     });
   }
 
@@ -47,7 +57,32 @@ export class History {
    * @param {string} url The url to push onto the Viewer history.
    */
   pushState(url) {
-    const urlStr = '/amp/' + url;
-    window.history.pushState({urlPath: url}, '', urlStr);
+    let stateData = {
+      urlPath: url,
+      isAMP: true
+    };
+
+    // The url should have /amp/ + url added to it. For example:
+    // example.com -> example.com/amp/s/www.ampproject.org
+    // TODO(chenshay): Include path & query parameters.
+    const parsedUrl = parseUrl(url);
+    let urlStr = '/amp/';
+    if (parsedUrl.protocol == 'https:') urlStr += 's/';
+    urlStr += parsedUrl.host;
+    history.pushState(stateData, '', urlStr);
+  }
+
+  /**
+   * Go back to the previous history state.
+   */
+  goBack() {
+    history.back();
+  }
+
+  /**
+   * Go forward to the next history state.
+   */
+  goForward() {
+    history.forward();
   }
 }

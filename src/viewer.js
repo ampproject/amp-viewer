@@ -57,12 +57,23 @@ class Viewer {
   /**
    * @param {!Function} showViewer method that shows the viewer.
    * @param {!Function} hideViewer method that hides the viewer.
+   * @param {!Function():boolean} isViewerHidden method that determines if viewer is hidden.
    */
-  setViewerShowAndHide(showViewer, hideViewer) {
+  setViewerShowAndHide(showViewer, hideViewer, isViewerHidden) {
     /** @private {!Function} */
     this.showViewer_ = showViewer;
     /** @private {!Function} */
     this.hideViewer_ = hideViewer;
+    /** @private {!Function} */
+    this.isViewerHidden_ = isViewerHidden;
+  }
+
+  /**
+   * @return {boolean} true if the viewer has already been loaded.
+   * @private
+   */
+  isLoaded_() {
+    return !!this.iframe_ && !!this.viewerMessaging_;
   }
 
   /**
@@ -77,7 +88,8 @@ class Viewer {
       this.viewerMessaging_ = new ViewerMessaging(
         window,
         this.iframe_,
-        parseUrl(ampDocCachedUrl).origin);
+        parseUrl(ampDocCachedUrl).origin,
+        this.messageHandler_.bind(this));
 
       this.viewerMessaging_.start().then(()=>{
         log('this.viewerMessaging_.start() Promise resolved !!!');
@@ -102,17 +114,17 @@ class Viewer {
     });
   }
 
-
   /**
    * Computes the init params that will be used to create the AMP Cache URL.
    * @return {object} the init params.
    * @private
-    */
+   */
   createInitParams_() {
     const parsedViewerUrl = parseUrl(window.location.href);
 
     const initParams = {
       'origin': parsedViewerUrl.origin,
+      'cap': 'history',
     };
 
     if (this.referrer_) initParams['referrer'] = this.referrer_;
@@ -136,14 +148,46 @@ class Viewer {
   }
   
   /**
-   * @param {?string} urlPath
+   * @param {boolean} isLastBack true if back button was hit and viewer should hide.
+   * @param {boolean} isAMP true if going to AMP document.
    * @private
     */
-  handleChangeHistoryState_(urlPath) {
-    if (urlPath) {
-      if (this.showViewer_) this.showViewer_();
-    } else {
+  handleChangeHistoryState_(isLastBack, isAMP) {
+    if (isLastBack) {
       if (this.hideViewer_) this.hideViewer_();
+      return;
+    }
+    if (isAMP && this.showViewer_ && this.isViewerHidden_ && this.isViewerHidden_()) {
+      this.showViewer_();
+    }
+  }
+
+  /**
+   * Place holder message handler. 
+   * @param {string} name
+   * @param {*} data
+   * @param {boolean} rsvp
+   * @return {!Promise<*>|undefined}
+   * @private
+   */
+  messageHandler_(name, data, rsvp) {
+    log('messageHandler: ', name, data, rsvp);
+    switch(name) {
+      case 'pushHistory':
+        this.history_.pushState(this.ampDocUrl_, data);
+        return Promise.resolve();
+      case 'popHistory':
+        this.history_.goBack();
+        return Promise.resolve();
+      case 'cancelFullOverlay':
+      case 'documentLoaded':
+      case 'documentHeight':
+      case 'prerenderComplete':
+      case 'requestFullOverlay':
+      case 'scroll':
+        return Promise.resolve();
+      default:
+        return Promise.reject(name + ' Message is not supported!');
     }
   }
 }
