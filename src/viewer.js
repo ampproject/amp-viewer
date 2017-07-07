@@ -80,11 +80,6 @@ class Viewer {
    * Attaches the AMP Doc Iframe to the Host Element.
    */
   attach() {
-    if (this.isLoaded_()) {
-      this.history_.goForward();
-      return;
-    }
-
     this.iframe_ = document.createElement('iframe');
     // TODO (chenshay): iframe_.setAttribute('scrolling', 'no')
     // to enable the scrolling workarounds for iOS.
