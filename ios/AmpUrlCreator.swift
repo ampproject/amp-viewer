@@ -22,6 +22,15 @@ class AmpUrlCreator {
      */
     static let DEFAULT_VIEWER_JS_VERSION_ = "0.1";
     
+
+    /**
+     * Constructs a Viewer cache url using these rules:
+     * https://developers.google.com/amp/cache/overview
+     *
+     * Example:
+     * Input url 'http://ampproject.org' can return
+     * 'https://www-ampproject-org.cdn.ampproject.org/v/s/www.ampproject.org/?amp_js_v=0.1#origin=http:%2F%2Flocalhost:8000'
+     */
     static func constructViewerCacheUrl(_ urlstring: String,
                                         initParams: Dictionary<String, String>,
                                         opt_viewerJsVersion: String) -> String {
@@ -54,6 +63,14 @@ class AmpUrlCreator {
     }
     
     
+    /**
+     * Takes a Dictionary such as:
+     * {
+     *   origin: "http://localhost:8000",
+     *   prerenderSize: "1"
+     * }
+     * and converts it to: "origin=http:%2F%2Flocalhost:8000&prerenderSize=1"
+     */
     static func paramsToString_(params: Dictionary<String, String>) -> String {
         var str = "";
         
