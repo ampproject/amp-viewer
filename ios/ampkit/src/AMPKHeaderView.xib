@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AMPKHeaderView"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="AMPKHeaderView">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4a-By-xTQ">
+                    <rect key="frame" x="0.0" y="-5" width="375" height="75"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rlv-MP-sDO" customClass="MDCFlatButton">
+                            <rect key="frame" x="0.0" y="0.0" width="44" height="75"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="44" id="WJU-5L-lp2"/>
+                            </constraints>
+                            <state key="normal" image="ic_close"/>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ww7-Lm-ux4">
+                            <rect key="frame" x="44" y="0.0" width="287" height="75"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3ez-Rt-bZg">
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="75"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hX7-hE-GRG" userLabel="Title Area">
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="50"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nVg-9N-r74" userLabel="Centering View">
+                                                    <rect key="frame" x="120.5" y="0.0" width="45" height="50"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalCompressionResistancePriority="250" image="ic_amp" translatesAutoresizingMaskIntoConstraints="NO" id="ki3-gD-P4S">
+                                                            <rect key="frame" x="0.0" y="17" width="16" height="16"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="16" id="ctd-7A-2cw"/>
+                                                                <constraint firstAttribute="height" secondItem="ki3-gD-P4S" secondAttribute="width" multiplier="1:1" id="jNE-v9-9o3"/>
+                                                            </constraints>
+                                                        </imageView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="URL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8RB-9s-NpU">
+                                                            <rect key="frame" x="21" y="18" width="24" height="14.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="ki3-gD-P4S" firstAttribute="trailing" secondItem="8RB-9s-NpU" secondAttribute="leading" constant="-5" id="8XT-KZ-Rdv"/>
+                                                        <constraint firstAttribute="trailing" secondItem="8RB-9s-NpU" secondAttribute="trailing" id="QZa-SO-Ifd"/>
+                                                        <constraint firstItem="ki3-gD-P4S" firstAttribute="centerY" secondItem="nVg-9N-r74" secondAttribute="centerY" id="Tfs-94-7pM"/>
+                                                        <constraint firstItem="8RB-9s-NpU" firstAttribute="centerY" secondItem="nVg-9N-r74" secondAttribute="centerY" id="TmE-sU-n9l"/>
+                                                        <constraint firstItem="ki3-gD-P4S" firstAttribute="leading" secondItem="nVg-9N-r74" secondAttribute="leading" id="iZI-ru-JR8"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="nVg-9N-r74" firstAttribute="centerX" secondItem="hX7-hE-GRG" secondAttribute="centerX" id="C3C-jo-33O"/>
+                                                <constraint firstAttribute="bottom" secondItem="nVg-9N-r74" secondAttribute="bottom" id="ahS-8h-rq2"/>
+                                                <constraint firstItem="nVg-9N-r74" firstAttribute="top" secondItem="hX7-hE-GRG" secondAttribute="top" id="cU6-CT-o5x"/>
+                                            </constraints>
+                                        </view>
+                                        <pageControl opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="E4n-uv-lta">
+                                            <rect key="frame" x="0.0" y="50" width="287" height="25"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="25" id="Dbs-jV-084"/>
+                                            </constraints>
+                                            <color key="pageIndicatorTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="currentPageIndicatorTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </pageControl>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="3ez-Rt-bZg" secondAttribute="trailing" id="RH1-xt-yeB"/>
+                                <constraint firstAttribute="bottom" secondItem="3ez-Rt-bZg" secondAttribute="bottom" id="hWJ-mF-dDR"/>
+                                <constraint firstItem="3ez-Rt-bZg" firstAttribute="leading" secondItem="Ww7-Lm-ux4" secondAttribute="leading" id="jrk-f5-4l3"/>
+                                <constraint firstItem="3ez-Rt-bZg" firstAttribute="top" secondItem="Ww7-Lm-ux4" secondAttribute="top" id="pED-ce-4iw"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AA3-IK-Bpy" customClass="MDCFlatButton">
+                            <rect key="frame" x="331" y="0.0" width="44" height="75"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="44" id="7Xv-Jo-Qsn"/>
+                            </constraints>
+                            <state key="normal" image="ic_ios_share"/>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" red="0.98040139675140381" green="0.98038303852081299" blue="0.98039543628692627" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <constraints>
+                <constraint firstItem="c4a-By-xTQ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="6eT-LW-O0F"/>
+                <constraint firstAttribute="bottom" secondItem="c4a-By-xTQ" secondAttribute="bottom" id="KqG-1b-8qo"/>
+                <constraint firstItem="c4a-By-xTQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" priority="750" id="Xb3-Fz-wm1"/>
+                <constraint firstAttribute="trailing" secondItem="c4a-By-xTQ" secondAttribute="trailing" id="pcU-cp-nnT"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="ampIcon" destination="ki3-gD-P4S" id="Q0t-Om-50n"/>
+                <outlet property="closeButton" destination="Rlv-MP-sDO" id="Fz3-iT-bA9"/>
+                <outlet property="pageControl" destination="E4n-uv-lta" id="PkI-Kq-Fwd"/>
+                <outlet property="shareButton" destination="AA3-IK-Bpy" id="sL8-uh-ciu"/>
+                <outlet property="stackView" destination="c4a-By-xTQ" id="hTV-sn-hw9"/>
+                <outlet property="stackViewTopAnchor" destination="Xb3-Fz-wm1" id="yn6-8D-mGt"/>
+                <outlet property="urlLabel" destination="8RB-9s-NpU" id="Qhq-nn-tt5"/>
+            </connections>
+            <point key="canvasLocation" x="-40.5" y="-158"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="ic_amp" width="16" height="16"/>
+        <image name="ic_close" width="16" height="16"/>
+        <image name="ic_ios_share" width="16" height="16"/>
+    </resources>
+</document>
