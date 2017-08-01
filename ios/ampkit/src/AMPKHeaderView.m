@@ -44,7 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
   static UINib *reusableNib = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    reusableNib = [UINib nibWithNibName:NSStringFromClass([self class]) bundle:nil];
+    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"AMPKit" ofType:@"bundle"];
+    NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
+    reusableNib = [UINib nibWithNibName:NSStringFromClass([self class]) bundle:bundle];
   });
   return reusableNib;
 }

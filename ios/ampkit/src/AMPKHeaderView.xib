@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -89,7 +89,7 @@
                             <constraints>
                                 <constraint firstAttribute="width" constant="44" id="7Xv-Jo-Qsn"/>
                             </constraints>
-                            <state key="normal" image="ic_ios_share"/>
+                            <state key="normal" image="ic_share"/>
                         </button>
                     </subviews>
                 </stackView>
@@ -118,8 +118,8 @@
         </view>
     </objects>
     <resources>
-        <image name="ic_amp" width="16" height="16"/>
-        <image name="ic_close" width="16" height="16"/>
-        <image name="ic_ios_share" width="16" height="16"/>
+        <image name="ic_amp" width="36" height="36"/>
+        <image name="ic_close" width="24" height="24"/>
+        <image name="ic_share" width="24" height="24"/>
     </resources>
 </document>
