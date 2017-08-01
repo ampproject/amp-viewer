@@ -14,24 +14,9 @@
  * limitations under the License.
  */
 
-#import "ViewController.h"
+#import "AMPK.h"
 
-@interface ViewController ()
-
-@end
-
-@implementation ViewController
-
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
-}
-
-
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
-}
-
-
+// This is our custom subclass of the AMP Viewer. We subclass it to add our own custom header
+// You can implement the header however you so desire.
+@interface AKDAmpViewer : AMPKViewer <AMPKViewerDelegate, AMPKPresenterProtocol>
 @end

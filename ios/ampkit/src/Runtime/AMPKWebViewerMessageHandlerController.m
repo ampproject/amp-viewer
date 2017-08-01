@@ -33,8 +33,7 @@ static NSString *AMPKLoadAmpIntegrationSource(void) {
   static dispatch_once_t onceToken;
   static NSString *jsContents;
   dispatch_once(&onceToken, ^{
-    NSBundle *classBundle = [NSBundle bundleForClass:[AMPKWebViewerMessageHandlerController class]];
-    NSString *bundlePath = [[classBundle bundlePath] stringByAppendingPathComponent:AMPKJSBundle];
+    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"AMPKit" ofType:@"bundle"];
     NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
     NSString *resourcePath = [bundle pathForResource:AMPKJSName ofType:AMPKJSExtension];
     NSError *error;
