@@ -70,20 +70,20 @@ PODS:
   - OCMock (3.4)
 
 DEPENDENCIES:
-  - AMPKit (from `../AMPKit`)
+  - AMPKit (from `../`)
   - OCMock (~> 3.4)
 
 EXTERNAL SOURCES:
   AMPKit:
-    :path: ../AMPKit
+    :path: ../
 
 SPEC CHECKSUMS:
-  AMPKit: 1e51864d7ed26f1a4153cf08faef5c81d181f015
+  AMPKit: 2d551a7c7daf4bb6cf7e70ec00d4758b564049aa
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   MaterialComponents: d0ae7d9b517a72608caaa609682fe2de41921ba0
   MDFTextAccessibility: 94098925e0853551c5a311ce7c1ecefbe297cdb6
   OCMock: 35ae71d6a8fcc1b59434d561d1520b9dd4f15765
 
-PODFILE CHECKSUM: 7bc387f5e3a68cd097e547664733b015036d1999
+PODFILE CHECKSUM: f6d5de68b16969a9df9244b6d5de59fdd3ea38af
 
 COCOAPODS: 1.2.1
