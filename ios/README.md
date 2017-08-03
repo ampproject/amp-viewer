@@ -8,11 +8,11 @@ added to your iOS project in just a few lines.
 ## Quick Start
 AMPKit is composed of several primary components:
 
-*   The [AMPKViewController] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewController.m)
-*   The [AMPKPrefetchController] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKPrefetchController.h)
-*   The [AMPKViewerDataSource] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/ViewControllers/AMPKViewerDataSource.h)
-*   The [AMPKArticle] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/Models/AMPKArticle.h)
-*   The [AMPKViewer] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewer.h)
+*   The [AMPKViewController](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewController.m)
+*   The [AMPKPrefetchController](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKPrefetchController.h)
+*   The [AMPKViewerDataSource](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/ViewControllers/AMPKViewerDataSource.h)
+*   The [AMPKArticle](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/Models/AMPKArticle.h)
+*   The [AMPKViewer](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewer.h)
 
 For the most part, you should not try to present an `AMPKViewer` or subclass
 yourself. Instead, you should create one via an `AMPKPrefetchController`. In
@@ -32,7 +32,7 @@ To add AMPKit to your app, just add the AMPKit dependency into your BUILD file:
 
 #### Headers
 
-AMPKit provides an umbrella header, [`AMPK.h`] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPK.h)
+AMPKit provides an umbrella header, [`AMPK.h`](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPK.h)
 for you to import when using or customizing AMPKit. In most cases, you shouldn't
 need to manually import any additional headers.
 
@@ -132,19 +132,19 @@ default AMPKViewController or as a starting point for customizing your own
 AMPKViewer. You can check out the Demo Project by running `pod install` inside
 AMPKitDemo directory.
 
-The [AKDAmpViewer] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKitDemo/AMPKitDemo/AKDAmpViewer.m)
+The [AKDAmpViewer](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKitDemo/AMPKitDemo/AKDAmpViewer.m)
 is the most simple starting point for making your own AMP viewer. 
 
-Of particular importance is the [`AMPKViewerDelegate`] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewer.h#L102)
+Of particular importance is the [`AMPKViewerDelegate`](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewer.h#L102)
 This has all the required methods for you to implement in order to properly
 update your UI and internal record keeping. Additionally, as AMPKViewer 
 is itself a UIPageViewController, you're free to implement any of the 
 UIPageViewControllerDelegate methods. Just be sure to call `super` class'
 method first. 
 
-Also, there's the [`AMPKPresenterProtocol`] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/Protocols/AMPKPresenterProtocol.h)
+Also, there's the [`AMPKPresenterProtocol`](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/Protocols/AMPKPresenterProtocol.h)
 to implement for opening external links that are clicked in the AMP document.
 
 Note that none of these delegates are available in the AMPKViewController.
-Instead, there's a single ['AMPKViewControllerDelegate'] (https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewController.h#L55)
+Instead, there's a single ['AMPKViewControllerDelegate'](https://github.com/ampproject/amp-viewer/blob/master/ios/AMPKit/AMPKViewController.h#L55)
 you should use instead.
