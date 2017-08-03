@@ -29,16 +29,15 @@ An AMP viewer for iOS that supports prefetching articles and loading multiple AM
   s.ios.deployment_target = '9.0'
   s.requires_arc = true
 
-  s.source_files = 'src/**/*.m', 'src/**/*.h'
+  s.source_files = 'AMPKit/**/*.m', 'AMPKit/**/*.h'
 
   s.resource_bundles = {
-     'AMPKit' => ['src/Icons.xcassets', 'src/AMPKHeaderView.xib', 'src/Resources/amp_integration.js']
+     'AMPKit' => ['AMPKit/Icons.xcassets', 'AMPKit/AMPKHeaderView.xib', 'AMPKit/Resources/amp_integration.js']
   }
 
-   s.public_header_files = 'src/**/*.h'
+   s.public_header_files = './AMPKit/**/*.h'
    s.frameworks = 'UIKit', 'SafariServices', 'WebKit'
    s.dependency 'MaterialComponents/ActivityIndicator', '~> 29.0'
    s.dependency 'MaterialComponents/Buttons', '~> 29.0'
-   s.dependency 'MaterialComponents/ActivityIndicator', '~> 29.0'
    s.dependency 'GoogleToolboxForMac/Defines', '~> 2.1'
 end
