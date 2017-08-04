@@ -27,8 +27,25 @@ simply display AMP articles without much effort on your part.
 
 ### Adding AMPKit to your project
 
-To add AMPKit to your app, just add the AMPKit dependency into your BUILD file:
-`//googlemac/iPhone/Shared/AmpKit`
+The recommended route is to add AMPKit via Cocoapods. First, you'll need to
+install Cocoapods.
+
+To install CocoaPods, run the following commands:
+
+`sudo gem install cocoapods`
+To integrate AMPKit into your existing app create a new Podfile:
+
+```cd your-project-directory
+pod init
+````
+
+Finally, add the AMPKit pod to your app's target:
+
+```target "MyApp" do
+  ...
+  pod 'AMPKit'
+end
+````
 
 #### Headers
 
