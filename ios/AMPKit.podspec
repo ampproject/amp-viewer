@@ -24,7 +24,7 @@ An AMP viewer for iOS that supports prefetching articles and loading multiple AM
 
   s.homepage         = 'https://github.com/ampproject/amp-viewer/tree/master/ios'
   s.license          = { :type => 'Apache 2.0' }
-  s.source           = { :git => 'https://github.com/ampproject/amp-viewer.git' }
+  s.source           = { :git => 'https://github.com/ampproject/amp-viewer.git', :tag => "v#{s.version}-ios" }
 
   s.ios.deployment_target = '9.0'
   s.requires_arc = true
