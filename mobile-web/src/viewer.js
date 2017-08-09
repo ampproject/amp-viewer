@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {constructViewerCacheUrl} from './amp-url-creator';
-import {ViewerMessaging} from './viewer-messaging';
 import {History} from './history';
+import {ViewerMessaging} from './viewer-messaging';
+import {constructViewerCacheUrl} from './amp-url-creator';
 import {log} from '../utils/log';
 import {parseUrl} from '../utils/url';
 
@@ -57,7 +57,7 @@ class Viewer {
   /**
    * @param {!Function} showViewer method that shows the viewer.
    * @param {!Function} hideViewer method that hides the viewer.
-   * @param {!Function():boolean} isViewerHidden method that determines if viewer is hidden.
+   * @param {!function():boolean} isViewerHidden method that determines if viewer is hidden.
    */
   setViewerShowAndHide(showViewer, hideViewer, isViewerHidden) {
     /** @private {!Function} */
