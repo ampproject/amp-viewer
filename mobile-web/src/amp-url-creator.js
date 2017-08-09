@@ -134,8 +134,7 @@ function constructCacheDomainUrl_(url, opt_cacheUrlAuthority) {
  *    string.
  *
  * @param {string} url The complete publisher url.
- * @return {string} The curls encoded domain
- * @return {!Promise<string>}
+ * @return {!Promise<string>} The curls encoded domain.
  * @private
  */
 export function constructCacheDomain_(url) {

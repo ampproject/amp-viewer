@@ -88,7 +88,7 @@ export class ViewerMessaging {
         } else {
           this.messageHandler_(data.name, data.data, data.rsvp);
         }
-      }
+      };
     }
   }
 
@@ -113,7 +113,7 @@ export class ViewerMessaging {
             resolve();
           });
         }
-      }
+      };
       this.win.addEventListener('message', listener);
     });
   }

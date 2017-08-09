@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-
+/**
+ * Logs an arbitrary list of arguments to the console using viewer-specific
+ * lead-ins.
+ */
 export function log() {
   const var_args = Array.prototype.slice.call(arguments, 0);
   var_args.unshift('[Viewer]');
