@@ -3,7 +3,8 @@ const path = require('path');
 module.exports = {
   watch: true,
   entry: {
-    'viewer': './src/viewer.js',
+    'url_creator': './src/amp-url-creator.js',
+	 'viewer': './src/viewer.js',
   },
   output: {
     filename: '[name].js',

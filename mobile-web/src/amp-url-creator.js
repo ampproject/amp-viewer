@@ -46,6 +46,10 @@ const HAS_RTL_CHARS = new RegExp('[' + RTL_CHARS + ']');
 /** @private {number} */
 const MAX_DOMAIN_LABEL_LENGTH_ = 63;
 
+export function constructNativeViewerCacheUrl(url, initParams,
+  opt_cacheUrlAuthority, opt_viewerJsVersion) {
+	  return constructViewerCacheUrlOptions(url, true, initParams, opt_cacheUrlAuthority, opt_viewerJsVersion);
+}
 
 /**
  * Constructs a Viewer cache url using these rules:
@@ -64,6 +68,11 @@ const MAX_DOMAIN_LABEL_LENGTH_ = 63;
  */
 export function constructViewerCacheUrl(url, initParams,
   opt_cacheUrlAuthority, opt_viewerJsVersion) {
+	  return constructViewerCacheUrlOptions(url, false, initParams, opt_cacheUrlAuthority, opt_viewerJsVersion);
+ }
+  
+function constructViewerCacheUrlOptions(url, native, initParams,
+    opt_cacheUrlAuthority, opt_viewerJsVersion) {
   const parsedUrl = parseUrl(url);
   const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
   const viewerJsVersion = opt_viewerJsVersion ? opt_viewerJsVersion :
@@ -75,7 +84,7 @@ export function constructViewerCacheUrl(url, initParams,
       resolve(
         'https://' +
         cacheDomain + 
-        '/v/' +
+        native ? '/v/' : '/c/' +
         protocolStr +
         parsedUrl.host + 
         parsedUrl.pathname +
