@@ -46,10 +46,27 @@ const HAS_RTL_CHARS = new RegExp('[' + RTL_CHARS + ']');
 /** @private {number} */
 const MAX_DOMAIN_LABEL_LENGTH_ = 63;
 
+/**
+ * Constructs a Viewer cache url for native viers using these rules:
+ * https://developers.google.com/amp/cache/overview
+ * 
+ * Example:
+ * Input url 'http://ampproject.org' can return 
+ * 'https://www-ampproject-org.cdn.ampproject.org/v/s/www.ampproject.org/?amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000'
+ * 
+ * @param {string} url The complete publisher url.
+ * @param {object} initParams Params containing origin, etc.
+ * @param {string} opt_cacheUrlAuthority
+ * @param {string} opt_viewerJsVersion
+ * @return {!Promise<string>}
+ * @private
+ */
 export function constructNativeViewerCacheUrl(url, initParams,
   opt_cacheUrlAuthority, opt_viewerJsVersion) {
 	  return constructViewerCacheUrlOptions(url, true, initParams, opt_cacheUrlAuthority, opt_viewerJsVersion);
 }
+
+window.constructNativeViewerCacheUrl = constructNativeViewerCacheUrl;
 
 /**
  * Constructs a Viewer cache url using these rules:
@@ -70,7 +87,23 @@ export function constructViewerCacheUrl(url, initParams,
   opt_cacheUrlAuthority, opt_viewerJsVersion) {
 	  return constructViewerCacheUrlOptions(url, false, initParams, opt_cacheUrlAuthority, opt_viewerJsVersion);
  }
-  
+
+/**
+ * Constructs a Viewer cache url using these rules:
+ * https://developers.google.com/amp/cache/overview
+ * 
+ * Example:
+ * Input url 'http://ampproject.org' can return 
+ * 'https://www-ampproject-org.cdn.ampproject.org/v/s/www.ampproject.org/?amp_js_v=0.1#origin=http%3A%2F%2Flocalhost%3A8000'
+ * 
+ * @param {string} url The complete publisher url.
+ * @param {object} initParams Params containing origin, etc.
+ * @param (boolean} native Whether or not the url generated follows rules for native viewers (like AMPKit)
+ * @param {string} opt_cacheUrlAuthority
+ * @param {string} opt_viewerJsVersion
+ * @return {!Promise<string>}
+ * @private
+ */
 function constructViewerCacheUrlOptions(url, native, initParams,
     opt_cacheUrlAuthority, opt_viewerJsVersion) {
   const parsedUrl = parseUrl(url);
@@ -78,18 +111,20 @@ function constructViewerCacheUrlOptions(url, native, initParams,
   const viewerJsVersion = opt_viewerJsVersion ? opt_viewerJsVersion :
     DEFAULT_VIEWER_JS_VERSION_;
   const search = parsedUrl.search ? parsedUrl.search + '&' : '?';
+  const pathType = native ? '/c/' : '/v/';
+  const ampJSVersion = native ? '' : 'amp_js_v=' + viewerJsVersion;
 
   return new Promise(resolve => {
     constructCacheDomainUrl_(parsedUrl.host, opt_cacheUrlAuthority).then(cacheDomain => {
       resolve(
         'https://' +
         cacheDomain + 
-        native ? '/v/' : '/c/' +
+        pathType +
         protocolStr +
         parsedUrl.host + 
         parsedUrl.pathname +
         search +
-        'amp_js_v=' + viewerJsVersion +
+        ampJSVersion +
         '#' +
         paramsToString_(initParams)
       );

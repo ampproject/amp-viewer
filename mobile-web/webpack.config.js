@@ -3,8 +3,8 @@ const path = require('path');
 module.exports = {
   watch: true,
   entry: {
-    'url_creator': './src/amp-url-creator.js',
-	 'viewer': './src/viewer.js',
+    'ampkit': './src/ampkit-url-creator.js',
+	'viewer': './src/viewer.js',
   },
   output: {
     filename: '[name].js',
@@ -24,7 +24,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.resolve(__dirname, './example'),  // New
-    compress: true,
+    compress: false,
     port: 8000,
   },
 }
