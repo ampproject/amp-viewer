@@ -16,6 +16,18 @@
 
 var ampURLCreator = require('amp-url-creator');
 
+/**
+* Constructs a Viewer cache url for AmpKit using these rules:
+* https://developers.google.com/amp/cache/overview
+* 
+* Example:
+* Input url 'http://ampproject.org' can return 
+* 'https://www-ampproject-org.cdn.ampproject.org/c/s/www.ampproject.org/'
+*
+* Responds to the request via the webkit messaging system using the 'ampkit' handler.
+* 
+* @param {string} url The complete publisher url.
+*/
 function createCDNURL(url) {
 	ampURLCreator.constructNativeViewerCacheUrl(url).then(successValue => {
 		if ('webkit' in window && 'messageHandlers' in window.webkit && 'ampkit' in window.webkit.messageHandlers) {

@@ -66,8 +66,6 @@ export function constructNativeViewerCacheUrl(url, initParams,
 	  return constructViewerCacheUrlOptions(url, true, initParams, opt_cacheUrlAuthority, opt_viewerJsVersion);
 }
 
-window.constructNativeViewerCacheUrl = constructNativeViewerCacheUrl;
-
 /**
  * Constructs a Viewer cache url using these rules:
  * https://developers.google.com/amp/cache/overview
