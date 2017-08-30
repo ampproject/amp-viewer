@@ -4,7 +4,7 @@ module.exports = {
   watch: true,
   entry: {
     'ampkit': './ampkit/ampkit-url-creator.js',
-	'viewer': './src/viewer.js',
+    'viewer': './src/viewer.js',
   },
   output: {
     filename: '[name].js',
@@ -24,7 +24,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.resolve(__dirname, './example'),  // New
-    compress: false,
+    compress: true,
     port: 8000,
   },
 }
