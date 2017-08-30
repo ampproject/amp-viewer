@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   watch: true,
   entry: {
-    'ampkit': './src/ampkit-url-creator.js',
+    'ampkit': './ampkit/ampkit-url-creator.js',
 	'viewer': './src/viewer.js',
   },
   output: {

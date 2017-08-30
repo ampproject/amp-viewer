@@ -32,7 +32,7 @@ An AMP viewer for iOS that supports prefetching articles and loading multiple AM
   s.source_files = 'AMPKit/**/*.m', 'AMPKit/**/*.h'
 
   s.resource_bundles = {
-     'AMPKit' => ['AMPKit/Icons.xcassets', 'AMPKit/AMPKHeaderView.xib', 'AMPKit/Resources/amp_integration.js']
+     'AMPKit' => ['AMPKit/Icons.xcassets', 'AMPKit/AMPKHeaderView.xib', 'AMPKit/Resources/amp_integration.js', 'AMPKit/vendor/ampkit.js']
   }
 
    s.public_header_files = './AMPKit/**/*.h'
