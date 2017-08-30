@@ -17,8 +17,7 @@
 var ampURLCreator = require('amp-url-creator');
 
 function createCDNURL(url) {
-	var promise = ampURLCreator.constructNativeViewerCacheUrl(url);
-	promise.then(successValue => {
+	ampURLCreator.constructNativeViewerCacheUrl(url).then(successValue => {
 		if ('webkit' in window && 'messageHandlers' in window.webkit && 'ampkit' in window.webkit.messageHandlers) {
 			window.webkit.messageHandlers.ampkit.postMessage({body: successValue});
 		}
