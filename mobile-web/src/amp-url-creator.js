@@ -96,21 +96,21 @@ export function constructViewerCacheUrl(url, initParams,
  * 
  * @param {string} url The complete publisher url.
  * @param {object} initParams Params containing origin, etc.
- * @param (boolean} native Whether or not the url generated follows rules for native viewers (like AMPKit)
+ * @param {boolean} isNative Whether or not the url generated follows rules for native viewers (like AMPKit)
  * @param {string} opt_cacheUrlAuthority
  * @param {string} opt_viewerJsVersion
  * @return {!Promise<string>}
  * @private
  */
-function constructViewerCacheUrlOptions(url, native, initParams,
+function constructViewerCacheUrlOptions(url, isNative, initParams,
     opt_cacheUrlAuthority, opt_viewerJsVersion) {
   const parsedUrl = parseUrl(url);
   const protocolStr = parsedUrl.protocol == 'https:' ? 's/' : '';
   const viewerJsVersion = opt_viewerJsVersion ? opt_viewerJsVersion :
     DEFAULT_VIEWER_JS_VERSION_;
   const search = parsedUrl.search ? parsedUrl.search + '&' : '?';
-  const pathType = native ? '/c/' : '/v/';
-  const ampJSVersion = native ? '' : 'amp_js_v=' + viewerJsVersion;
+  const pathType = isNative ? '/c/' : '/v/';
+  const ampJSVersion = isNative ? '' : 'amp_js_v=' + viewerJsVersion;
 
   return new Promise(resolve => {
     constructCacheDomainUrl_(parsedUrl.host, opt_cacheUrlAuthority).then(cacheDomain => {
