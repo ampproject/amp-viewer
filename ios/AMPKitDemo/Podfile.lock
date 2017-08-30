@@ -78,7 +78,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  AMPKit: 1db58b230d6acf2660a3f2524fc3de8279c37c52
+  AMPKit: 26924fe3c0b74fa93f424bce6ff891ef644bc636
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   MaterialComponents: d0ae7d9b517a72608caaa609682fe2de41921ba0
   MDFTextAccessibility: 94098925e0853551c5a311ce7c1ecefbe297cdb6
