@@ -1,0 +1,15 @@
+language: objective-c
+osx_image: xcode8.3
+
+env:
+  global:
+    - DESTINATION="platform=iOS Simulator,name=iPhone 7"
+
+
+before_install:
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  
+script:
+  - cd ios/AMPKitDemo
+  - pod install
+  - xcodebuild test -workspace AMPKitDemo.xcworkspace/ -scheme AMPKitDemoTests -sdk iphonesimulator -destination $DESTINATION
