@@ -12,5 +12,5 @@ before_install:
 script:
   - set -o pipefail
   - cd ios/AMPKitDemo
-  - pod install
+  - pod install --repo-update
   - xcodebuild test -workspace AMPKitDemo.xcworkspace/ -scheme AMPKitDemoTests -sdk iphonesimulator -destination $DESTINATION
