@@ -1,11 +1,6 @@
 language: objective-c
 osx_image: xcode8.3
 
-env:
-  global:
-    - DESTINATION='"=platform=iOS Simulator,name=iPhone 7"'
-
-
 before_install:
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
   
@@ -13,4 +8,4 @@ script:
   - set -o pipefail
   - cd ios/AMPKitDemo
   - pod install --repo-update
-  - xcodebuild test -workspace AMPKitDemo.xcworkspace/ -scheme AMPKitDemoTests -sdk iphonesimulator -destination $DESTINATION
+  - xcodebuild test -workspace AMPKitDemo.xcworkspace/ -scheme AMPKitDemoTests -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 7"
