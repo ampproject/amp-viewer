@@ -127,6 +127,7 @@ NS_ASSUME_NONNULL_BEGIN
       [[AMPKViewerDataSource alloc] initWithDomainName:defaultURL];
   id viewerMock = OCMPartialMock([[AMPKViewer alloc] initWithViewerDataSource:viewerDataSource]);
   OCMStub([protocolMock newViewerWithDataSource:[OCMArg any]]).andReturn(viewerMock);
+  OCMStub([protocolMock defaultDataSource]).andReturn(viewerDataSource);
   self.subject.prefetchProvider = protocolMock;
   NSArray <AMPKArticle *> *validArticles =
       @[[AMPKArticle articleWithURL:[NSURL URLWithString:@"https://www.google.com/test"]]];
