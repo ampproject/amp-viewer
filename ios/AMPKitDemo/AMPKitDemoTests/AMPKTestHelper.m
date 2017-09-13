@@ -92,3 +92,42 @@ static NSString *const kTestBroadcastMessageURLString = @"http://www.nope.com";
 }
 
 @end
+
+@implementation AMPKTestArticle
+
+@synthesize cdnURL = _cdnURL;
+@synthesize publisherURL = _publisherURL;
+@synthesize canonicalURL = _canonicalURL;
+
++ (instancetype)articleWithURL:(NSURL *)articleURL cdnURL:(NSURL *)cdnURL {
+  AMPKTestArticle *article = [[AMPKTestArticle alloc] init];
+  article.publisherURL = articleURL;
+  article.cdnURL = cdnURL;
+  return article;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [aCoder encodeObject:self.cdnURL forKey:@"_cdn"];
+  [aCoder encodeObject:self.publisherURL forKey:@"_publishers"];
+  [aCoder encodeObject:self.canonicalURL forKey:@"_canonical"];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+  AMPKTestArticle *copy = [[AMPKTestArticle alloc] init];
+  copy.cdnURL = self.cdnURL;
+  copy.publisherURL = self.publisherURL;
+  copy.canonicalURL = self.canonicalURL;
+  return copy;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+  self = [super init];
+  if (self) {
+    _cdnURL = [aDecoder decodeObjectForKey:@"_cdn"];
+    _publisherURL = [aDecoder decodeObjectForKey:@"_publishers"];
+    _canonicalURL = [aDecoder decodeObjectForKey:@"_canonical"];
+  }
+  return self;
+}
+
+@end

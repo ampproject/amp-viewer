@@ -22,6 +22,7 @@
 #import "AMPKViewer.h"
 #import "AMPKViewerDataSource.h"
 #import "AMPKWebViewerViewController.h"
+#import "AMPKTestHelper.h"
 
 #import <OCMock/OCMock.h>
 
@@ -53,8 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)testInvalidCDNURL {
-  NSArray <AMPKArticle *> *validArticles =
-      @[[AMPKArticle articleWithURL:[NSURL URLWithString:@"https://www.google.com/test"]
+  NSArray <id<AMPKArticleProtocol>> *validArticles =
+  @[[AMPKTestArticle articleWithURL:[NSURL URLWithString:@"https://www.google.com/test"]
                              cdnURL:[NSURL URLWithString:@""]]];
   [self.subject ampViewerWithArticles:validArticles usingHeaders:nil prefetchedAtIndex:0];
   XCTAssertEqual(self.subject.ampViewController.viewerDataSource.count, 0);

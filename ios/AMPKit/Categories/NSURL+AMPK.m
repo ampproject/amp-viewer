@@ -29,6 +29,48 @@ static NSDictionary *kAMPSharingBasePathMapping(void) {
 
 @implementation NSURL (AMP)
 
+- (nullable NSURL *)sanitizedCDNURL {
+  if (![self isCDNURL]) {
+    return nil;
+  } else if ([self needsCDNSanitization]) {
+    NSURLComponents *components = [NSURLComponents componentsWithString:self.absoluteString];
+    NSMutableArray *pathComponents = [self.pathComponents mutableCopy];
+    if ([self isFirstPathComponentEmpty]) {
+      [pathComponents removeObjectAtIndex:0];
+    }
+    // We need to include the leading "/" since this is the first path component.
+    pathComponents[0] = @"/c";
+    components.path = [pathComponents componentsJoinedByString:@"/"];
+    components.query = nil;
+    components.fragment = nil;
+    return [components URL];
+  }
+  return self;
+}
+
+- (BOOL)isCDNURL {
+  NSURL *defaultCDNURL = [NSURL URLWithString:kDefaultAMPProxyPrefix];
+  // The path should have at a minimum /c/<something> where iOS counts the leading "/" as a
+  // component.
+  if ([self.host hasSuffix:defaultCDNURL.host] && self.pathComponents.count > 2) {
+    NSString *secondPathComponent = self.pathComponents[1];
+    return [secondPathComponent isEqualToString:@"c"] || [secondPathComponent isEqualToString:@"v"];
+  }
+  return NO;
+}
+
+- (BOOL)needsCDNSanitization {
+  return [self isSpecifyingManualVersion] || self.query || self.fragment;
+}
+
+- (BOOL)isSpecifyingManualVersion {
+  return [[self pathComponents][1] isEqualToString:@"v"];
+}
+
+- (BOOL)isFirstPathComponentEmpty {
+  return [[self pathComponents][0] isEqualToString:@"/"];
+}
+
 // We need to validate hostname match for both CURLS and non-CURLS addresses (which get redirects).
 // If the non-CURLS adddress is redirected to CURLS, the host name won't match, but, the path still
 // will and the source host name will be a subdomain (cdn.ampproject.org) of the new CURLS address.

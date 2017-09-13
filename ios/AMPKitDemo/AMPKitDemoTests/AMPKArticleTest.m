@@ -42,27 +42,27 @@
 - (void)testCDNURLEqual {
   AMPKArticle *article1 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]
-                           cdnURL:[NSURL URLWithString:@"http://www.test.com"]];
+                           cdnURL:[NSURL URLWithString:@"http://cdn.ampproject.org/c/test"]];
   AMPKArticle *article2 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]
-                           cdnURL:[NSURL URLWithString:@"http://www.test.com"]];
+                           cdnURL:[NSURL URLWithString:@"http://cdn.ampproject.org/c/test"]];
   XCTAssertEqualObjects(article1, article2);
 }
 
 - (void)testCDNURLNotEqual {
   AMPKArticle *article1 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]
-                           cdnURL:[NSURL URLWithString:@"http://www.test.com"]];
+                           cdnURL:[NSURL URLWithString:@"http://cdn.ampproject.org/c/test"]];
   AMPKArticle *article2 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]
-                           cdnURL:[NSURL URLWithString:@"http://www.test.com/test"]];
+                           cdnURL:[NSURL URLWithString:@"http://cdn.ampproject.org/c/test2"]];
   XCTAssertNotEqualObjects(article1, article2);
 }
 
 - (void)testCDNURLNil {
   AMPKArticle *article1 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]
-                           cdnURL:[NSURL URLWithString:@"http://www.test.com"]];
+                           cdnURL:[NSURL URLWithString:@"http://cdn.ampproject.org/c/test"]];
   AMPKArticle *article2 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]];
   XCTAssertNotEqualObjects(article1, article2);
@@ -95,6 +95,22 @@
   AMPKArticle *article2 =
       [AMPKArticle articleWithURL:[NSURL URLWithString:@"http://www.google.com"]];
   XCTAssertNotEqualObjects(article1, article2);
+}
+
+- (void)testSettingNonSanitizedCDN {
+  NSString *articleURL = @"http://www.google.com";
+  NSString *cdnURL = @"https://cdn.ampproject.org/v/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event?amp_js_v=0.1#test=1&visibilityState=prerender";
+  AMPKArticle *article = [AMPKArticle articleWithURL:[NSURL URLWithString:articleURL]
+                                              cdnURL:[NSURL URLWithString:cdnURL]];
+  XCTAssertNotEqualObjects(cdnURL, article.cdnURL.absoluteString);
+}
+
+- (void)testSettingSanitizedCDN {
+  NSString *articleURL = @"http://www.google.com";
+  NSString *cdnURL = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event";
+  AMPKArticle *article = [AMPKArticle articleWithURL:[NSURL URLWithString:articleURL]
+                                              cdnURL:[NSURL URLWithString:cdnURL]];
+  XCTAssertEqualObjects(cdnURL, article.cdnURL.absoluteString);
 }
 
 @end

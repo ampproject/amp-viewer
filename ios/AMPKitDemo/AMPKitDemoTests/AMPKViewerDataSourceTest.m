@@ -20,6 +20,7 @@
 
 #import "AMPKArticle.h"
 #import "AMPKArticleProtocol.h"
+#import "AMPKTestHelper.h"
 #import "AMPKWebViewerViewController.h"
 #import "AMPKWebViewerViewController_private.h"
 
@@ -302,7 +303,7 @@
   NSMutableArray<id<AMPKArticleProtocol>> *articles = [NSMutableArray arrayWithCapacity:count];
   for (NSUInteger indx = 0; indx < count; indx++) {
     NSString *urlString = [NSString stringWithFormat:@"https://www.google.com/%@", @(indx)];
-    AMPKArticle *article = [[AMPKArticle alloc] init];
+    AMPKTestArticle *article = [[AMPKTestArticle alloc] init];
     article.publisherURL = [NSURL URLWithString:urlString];
     [articles addObject:article];
   }

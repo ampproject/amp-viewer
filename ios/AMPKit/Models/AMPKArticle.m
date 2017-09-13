@@ -60,6 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
   return ampArticle;
 }
 
+- (void)setCdnURL:(nullable NSURL *)cdnURL {
+  _cdnURL = [cdnURL sanitizedCDNURL];
+}
+
 - (BOOL)isEqual:(id)object {
   if (object == self) {
     return YES;
