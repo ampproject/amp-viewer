@@ -52,6 +52,12 @@
  */
 @property(nonatomic, readonly) NSInteger currentViewerIndex;
 
+/**
+ * Sets the |currentAmpWebViewerController| visibility state to prerender. Use this if you want to
+ * physically present the AMPKViewer on screen but not change the visibility state to visible.
+ * Swiping or other activity in the viewer will override this state.
+ */
+@property(nonatomic) BOOL isPrefetched;
 
 - (instancetype)initWithViewerDataSource:(AMPKViewerDataSource *)viewerDataSource
     NS_DESIGNATED_INITIALIZER;

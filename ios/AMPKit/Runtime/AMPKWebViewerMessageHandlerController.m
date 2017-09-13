@@ -25,6 +25,12 @@
 #import "AMPKWebViewerViewController.h"
 #import "AMPKWebViewerViewController_private.h"
 
+typedef NS_ENUM(NSInteger, AMPKVisibilityState) {
+  AMPKVisibilityStatePrefetched,
+  AMPKVisibilityStateVisible,
+  AMPKVisibilityStateHidden,
+};
+
 static NSString * const AMPKJSBundle = @"AmpKit.bundle";
 static NSString * const AMPKJSName = @"amp_integration";
 static NSString * const AMPKJSExtension = @"js";
@@ -47,6 +53,12 @@ static NSString *AMPKLoadAmpIntegrationSource(void) {
   });
   return jsContents;
 };
+
+static NSDictionary *kAMPKVisibilityState(void) {
+  return @{ @(AMPKVisibilityStateVisible) : @"visible",
+            @(AMPKVisibilityStateHidden) : @"inactive",
+            @(AMPKVisibilityStatePrefetched) : @"prerender" };
+}
 
 @implementation AMPKWebViewerMessageHandlerController {
   WKUserScript *_ampIntegrationScript;
@@ -149,8 +161,21 @@ static NSString *AMPKLoadAmpIntegrationSource(void) {
   if (!_lastMessage) {
     return;
   }
+  AMPKVisibilityState state = visible ? AMPKVisibilityStateVisible : AMPKVisibilityStateHidden;
+  [self sendVisibilityState:state];
+}
 
-  NSString *state = (visible ? @"visible" : @"inactive");
+- (void)sendPrefetched {
+  // Until some message has been received, we could not have received the document loaded message.
+  // Therefore, don't even bother creating the message and requesting it be sent as it will not.
+  if (!_lastMessage) {
+    return;
+  }
+  [self sendVisibilityState:AMPKVisibilityStatePrefetched];
+}
+
+- (void)sendVisibilityState:(AMPKVisibilityState)visibilityState {
+  NSString *state = kAMPKVisibilityState()[@(visibilityState)];
   AMPKWebViewerJsMessage *message =
       [AMPKWebViewerJsMessage messageWithType:AMPKMessageTypeRequest
                                          name:kAmpVisibilityChangeMessageName

@@ -79,6 +79,15 @@
   self.currentAmpWebViewerController.presenter = _presenter;
 }
 
+- (void)setIsPrefetched:(BOOL)isPrefetched {
+  if (isPrefetched == _isPrefetched) return;
+
+  _isPrefetched = isPrefetched;
+  if (!isPrefetched) {
+    [_currentAmpWebViewerController setVisible:YES];
+  }
+}
+
 #pragma mark - State Restoration
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
@@ -121,6 +130,7 @@
   if (!completed) {
     return;
   }
+  self.isPrefetched = NO;
 
   NSAssert(_currentAmpWebViewerController == previousViewControllers.firstObject,
             @"currentAmpWebViewController %@ must be in preivousViewController %@",
