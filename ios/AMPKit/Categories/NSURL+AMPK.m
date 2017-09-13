@@ -29,6 +29,20 @@ static NSDictionary *kAMPSharingBasePathMapping(void) {
 
 @implementation NSURL (AMP)
 
+// We need to validate hostname match for both CURLS and non-CURLS addresses (which get redirects).
+// If the non-CURLS adddress is redirected to CURLS, the host name won't match, but, the path still
+// will and the source host name will be a subdomain (cdn.ampproject.org) of the new CURLS address.
+- (BOOL)matchesCDNURL:(NSURL *)source {
+  NSURL *baseProxyURL = [NSURL URLWithString:kDefaultAMPProxyPrefix];
+  if ([self.host isEqualToString:source.host]) {
+    return YES;
+  } else if ([source.host hasSuffix:baseProxyURL.host] &&
+             [self.lastPathComponent isEqualToString:source.lastPathComponent]) {
+    return YES;
+  }
+  return NO;
+}
+
 /** Returns the authority of the URL, which is the host + port if the port is not 80. */
 - (NSString *)authority {
   NSMutableString *authority = [[self host] mutableCopy];

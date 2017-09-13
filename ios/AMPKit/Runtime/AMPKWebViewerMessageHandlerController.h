@@ -26,7 +26,7 @@
 
 @property(nonatomic, weak) AMPKWebViewerViewController *ampWebViewerController;
 @property(nonatomic, weak) AMPKMessageBroadcaster *ampMessageBroadcaster;
-@property(nonatomic, copy) NSString *sourceHostName;
+@property(nonatomic, copy) NSURL *source;
 
 /** Send AMP page message via AMP JS channel. */
 - (void)sendAmpJsMessage:(AMPKWebViewerJsMessage *)message;

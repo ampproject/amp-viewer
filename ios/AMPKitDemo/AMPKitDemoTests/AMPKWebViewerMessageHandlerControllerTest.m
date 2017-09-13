@@ -37,7 +37,7 @@
 - (void)setUp {
   [super setUp];
   self.messageHandlerController = [[AMPKWebViewerMessageHandlerController alloc] init];
-  self.messageHandlerController.sourceHostName = kAmpKitTestSourceHostName;
+  self.messageHandlerController.source = [NSURL URLWithString:kAmpKitTestSourceHostName];
 }
 
 - (void)tearDown {
@@ -54,7 +54,7 @@
                                                                  data:nil
                                                                 error:nil];
 
-  self.messageHandlerController.sourceHostName = @"nope.com";
+  self.messageHandlerController.source = [NSURL URLWithString:@"nope.com"];
 
   [self.messageHandlerController userContentController:[WKUserContentController new]
                                didReceiveScriptMessage:mockWKScriptMessage];
