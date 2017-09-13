@@ -160,9 +160,9 @@ static NSDictionary *kAMPKVisibilityState(void) {
   // Therefore, don't even bother creating the message and requesting it be sent as it will not.
   if (!_lastMessage) {
     return;
-    AMPKVisibilityState state = visible ? AMPKVisibilityStateVisible : AMPKVisibilityStateHidden;
-    [self sendVisibilityState:state];
   }
+  AMPKVisibilityState state = visible ? AMPKVisibilityStateVisible : AMPKVisibilityStateHidden;
+  [self sendVisibilityState:state];
 }
 
 - (void)sendPrefetched {
