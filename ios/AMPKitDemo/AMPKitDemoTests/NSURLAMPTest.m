@@ -134,28 +134,28 @@ static NSString *kDomainName = @"https://www.google.com";
 }
 
 - (void)testCDNMatchesForCURLS {
-  NSString *url = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSString *url = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
   NSURL *CURLSCDN = [NSURL URLWithString:url];
   XCTAssertTrue([CURLSCDN matchesCDNURL:CURLSCDN]);
 }
 
 - (void)testCDNMatchesForNonCURLS {
-  NSString *url = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSString *url = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
   NSURL *nonCURLSCDN = [NSURL URLWithString:url];
   XCTAssertTrue([nonCURLSCDN matchesCDNURL:nonCURLSCDN]);
 }
 
 - (void)testCDNNonCURLSMatchesCURLS {
-  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
-  NSString *nonCURLSURL = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
+  NSString *nonCURLSURL = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
   NSURL *CURLSCDN = [NSURL URLWithString:CURLSURL];
   NSURL *nonCURLSCDN = [NSURL URLWithString:nonCURLSURL];
   XCTAssertTrue([nonCURLSCDN matchesCDNURL:CURLSCDN]);
 }
 
 - (void)testCDNCURLSMatchesNonCURLS {
-  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
-  NSString *nonCURLSURL = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
+  NSString *nonCURLSURL = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
   NSURL *CURLSCDN = [NSURL URLWithString:CURLSURL];
   NSURL *nonCURLSCDN = [NSURL URLWithString:nonCURLSURL];
   XCTAssertTrue([CURLSCDN matchesCDNURL:nonCURLSCDN]);
