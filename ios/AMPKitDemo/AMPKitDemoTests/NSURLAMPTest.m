@@ -161,4 +161,65 @@ static NSString *kDomainName = @"https://www.google.com";
   XCTAssertTrue([CURLSCDN matchesCDNURL:nonCURLSCDN]);
 }
 
+- (void)testNilForNonCDNURLSanitization {
+  NSURL *URL = [NSURL URLWithString:@"http://www.google.com"];
+  XCTAssertNil([URL sanitizedCDNURL]);
+}
+
+- (void)testNilForBaseCDNURLSanitization {
+  NSURL *URL = [NSURL URLWithString:@"http://cdn.ampproject.org"];
+  XCTAssertNil([URL sanitizedCDNURL]);
+}
+
+- (void)testNilForInvalidNumberOfPathsComponentsOnCDNURLSanitization {
+  NSURL *URL = [NSURL URLWithString:@"http://cdn.ampproject.org/dogs"];
+  XCTAssertNil([URL sanitizedCDNURL]);
+}
+
+- (void)testNilForNonArticleOnCDNURLSanitization {
+  NSURL *URL = [NSURL URLWithString:@"http://cdn.ampproject.org/two/three/four"];
+  XCTAssertNil([URL sanitizedCDNURL]);
+}
+
+- (void)testCDNDoesNotAlterSanitizedCDNURL {
+  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
+  NSURL *URL = [NSURL URLWithString:CURLSURL];
+  XCTAssertEqualObjects(URL, [URL sanitizedCDNURL]);
+}
+
+- (void)testDoesNotAlterSecurityStatusCDNURL {
+  NSString *invalidCURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality#test=1&visibilityState=prerender";
+  NSURL *invalidCURLSURLURL = [NSURL URLWithString:invalidCURLSURL];
+  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality";
+  NSURL *validCDNURL = [NSURL URLWithString:CURLSURL];
+  XCTAssertEqualObjects(validCDNURL, [invalidCURLSURLURL sanitizedCDNURL]);
+}
+
+- (void)testSanitizesURLWithInSecureCDNURL {
+  NSString *invalidCDN = @"https://www-theverge-com.cdn.ampproject.org/v/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event?amp_js_v=0.1#test=1&visibilityState=prerender";
+  NSString *sanitizedCDN = @"https://www-theverge-com.cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event";
+
+  NSURL *invalidCDNURL = [NSURL URLWithString:invalidCDN];
+  NSURL *sanitizedCDNURL = [NSURL URLWithString:sanitizedCDN];
+  XCTAssertEqualObjects(sanitizedCDNURL, [invalidCDNURL sanitizedCDNURL]);
+}
+
+- (void)testSanitizesURLWithSecureCDNURL {
+  NSString *invalidCDN = @"https://www-theverge-com.cdn.ampproject.org/v/s/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event?amp_js_v=0.1#test=1&visibilityState=prerender";
+  NSString *sanitizedCDN = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event";
+
+  NSURL *invalidCDNURL = [NSURL URLWithString:invalidCDN];
+  NSURL *sanitizedCDNURL = [NSURL URLWithString:sanitizedCDN];
+  XCTAssertEqualObjects(sanitizedCDNURL, [invalidCDNURL sanitizedCDNURL]);
+}
+
+- (void)testSanitizesNonCURLSURL {
+  NSString *invalidCDN = @"https://cdn.ampproject.org/v/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event?amp_js_v=0.1#test=1&visibilityState=prerender";
+  NSString *sanitizedCDN = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event";
+
+  NSURL *invalidCDNURL = [NSURL URLWithString:invalidCDN];
+  NSURL *sanitizedCDNURL = [NSURL URLWithString:sanitizedCDN];
+  XCTAssertEqualObjects(sanitizedCDNURL, [invalidCDNURL sanitizedCDNURL]);
+}
+
 @end

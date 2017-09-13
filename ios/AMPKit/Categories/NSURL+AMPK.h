@@ -46,6 +46,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)matchesCDNURL:(NSURL *)source;
 
+/**
+ * Returns the sanitized version of the CDN URL. For AMPKit, CDN URLs that include the AMP JS
+ * version via the "v" parameter or that try to directly initialize the runtime cannot be used. This
+ * method should be called on any URL you try to pass to AMPKit as a CDN URL to ensure it is in a
+ * safe form. Returns nil if the URL cannot be recognized as a CDN URL.
+ */
+- (nullable NSURL *)sanitizedCDNURL;
+
 @end
 
 NS_ASSUME_NONNULL_END

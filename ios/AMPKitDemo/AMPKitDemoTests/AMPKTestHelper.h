@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import "AMPKArticleProtocol.h"
 #import "AMPKWebViewerJsMessage.h"
 
 extern NSString *const kAmpKitTestSourceHostName;
@@ -45,5 +46,21 @@ extern NSString *const kAmpKitTestSourceHostName;
 
 /** Creates a class mock for a WKSAMPKWebViewerViewController with the specified article URL. */
 + (id)mockViewerWithURL:(NSURL *)url;
+
+@end
+
+/**
+ * A class which simply implements AMPKArticleProtocol without any of the excess bounds checking of
+ * AMPKArticle. This allows us to test some of the edge conditions inside the framework that
+ * AMPKArticle catches automatically.
+ */
+@interface AMPKTestArticle : NSObject <AMPKArticleProtocol>
+
+/**
+ * Creates and test article.
+ * @param articleURL The publisher's article URL to use.
+ * @param cdnURL The CDN ULR to use.
+ */
++ (instancetype)articleWithURL:(NSURL *)articleURL cdnURL:(NSURL *)cdnURL;
 
 @end
