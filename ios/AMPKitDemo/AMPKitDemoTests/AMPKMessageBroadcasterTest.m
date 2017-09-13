@@ -417,7 +417,7 @@ static NSString *const kTestBroadcastMessageURLString = @"http://www.nope.com";
       handler = [self strickMockForHandler];
     } else {
       handler = [[AMPKWebViewerMessageHandlerController alloc] init];
-      handler.sourceHostName = kAmpKitTestSourceHostName;
+      handler.source = [NSURL URLWithString:kAmpKitTestSourceHostName];
     }
 
     [set addObject:handler];

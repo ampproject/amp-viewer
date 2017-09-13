@@ -132,4 +132,33 @@ static NSString *kDomainName = @"https://www.google.com";
   NSString *cdnString = @"https://cdn.ampproject.org/c/www.test.com/sites/";
   XCTAssert([[url ampk_ProxiedURL].absoluteString isEqualToString:cdnString]);
 }
+
+- (void)testCDNMatchesForCURLS {
+  NSString *url = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSURL *CURLSCDN = [NSURL URLWithString:url];
+  XCTAssertTrue([CURLSCDN matchesCDNURL:CURLSCDN]);
+}
+
+- (void)testCDNMatchesForNonCURLS {
+  NSString *url = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSURL *nonCURLSCDN = [NSURL URLWithString:url];
+  XCTAssertTrue([nonCURLSCDN matchesCDNURL:nonCURLSCDN]);
+}
+
+- (void)testCDNNonCURLSMatchesCURLS {
+  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSString *nonCURLSURL = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSURL *CURLSCDN = [NSURL URLWithString:CURLSURL];
+  NSURL *nonCURLSCDN = [NSURL URLWithString:nonCURLSURL];
+  XCTAssertTrue([nonCURLSCDN matchesCDNURL:CURLSCDN]);
+}
+
+- (void)testCDNCURLSMatchesNonCURLS {
+  NSString *CURLSURL = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSString *nonCURLSURL = @"https://cdn.ampproject.org/c/s/www.theverge.com/platform/amp/2016/4/25/11501484/what-in-the-world-is-obama-looking-at-in-virtual-reality"; // NOLINT
+  NSURL *CURLSCDN = [NSURL URLWithString:CURLSURL];
+  NSURL *nonCURLSCDN = [NSURL URLWithString:nonCURLSURL];
+  XCTAssertTrue([CURLSCDN matchesCDNURL:nonCURLSCDN]);
+}
+
 @end

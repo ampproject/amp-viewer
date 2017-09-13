@@ -38,6 +38,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSString *)ampPath;
 
+/**
+ * Returns if the current URL matches the given CDN URL. This method is agnostic to checking the
+ * equivalence of CURLS vs non-CURLS CDN URLs. This way, you can check if a non-CURLS URL matches to
+ * its CURLS counterpart.
+ * @param source The CDN URL you want to compare the current URL to.
+ */
+- (BOOL)matchesCDNURL:(NSURL *)source;
+
 @end
 
 NS_ASSUME_NONNULL_END

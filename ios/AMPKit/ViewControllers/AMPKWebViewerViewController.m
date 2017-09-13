@@ -154,7 +154,6 @@ NSString * const AMPKHeaderNameField = @"X-AMP-VIEWER";
   self.view.hidden = !visible;
 }
 
-
 - (void)loadAmpArticle:(id<AMPKArticleProtocol>)article
            withHeaders:(nullable NSDictionary<NSString *, NSString *> *)headers {
   if ([self.article.publisherURL isEqual:article.publisherURL]) {
@@ -170,7 +169,7 @@ NSString * const AMPKHeaderNameField = @"X-AMP-VIEWER";
   NSAssert(self.article.publisherURL.host,
              @"Must have a valid Host for AMP URL: %@",
              self.article.publisherURL);
-  _messageHandlerController.sourceHostName = [[self proxiedURL] host];
+  _messageHandlerController.source = [self proxiedURL];
   _messageHandlerController.ampWebViewerController = self;
 
   NSURL *url = [[self proxiedURL] URLBySettingProxyHashFragmentsForDomain:_domainName];

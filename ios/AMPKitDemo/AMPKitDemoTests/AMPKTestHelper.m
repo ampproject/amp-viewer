@@ -23,7 +23,7 @@
 
 #import <OCMock/OCMock.h>
 
-NSString *const kAmpKitTestSourceHostName = @"www.google.com";
+NSString *const kAmpKitTestSourceHostName = @"https://cdn.ampproject.org";
 static NSString *const kTestBroadcastMessageURLString = @"http://www.nope.com";
 
 @implementation AMPKTestHelper
@@ -38,10 +38,8 @@ static NSString *const kTestBroadcastMessageURLString = @"http://www.nope.com";
   id jsMessageMock = OCMPartialMock([[WKScriptMessage alloc] init]);
 
   id wkFrameInfoMock = OCMStrictClassMock([WKFrameInfo class]);
-  id nsUrlMock = OCMStrictClassMock([NSURL class]);
-  [[[nsUrlMock stub] andReturn:kAmpKitTestSourceHostName] host];
   id nsUrlRequestMock = OCMStrictClassMock([NSURLRequest class]);
-  [[[nsUrlRequestMock stub] andReturn:nsUrlMock] URL];
+  [[[nsUrlRequestMock stub] andReturn:[NSURL URLWithString:kAmpKitTestSourceHostName]] URL];
   [[[wkFrameInfoMock stub] andReturn:nsUrlRequestMock] request];
 
   NSMutableDictionary *scriptData =

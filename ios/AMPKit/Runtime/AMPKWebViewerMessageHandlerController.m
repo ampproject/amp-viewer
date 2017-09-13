@@ -24,6 +24,7 @@
 #import "AMPKWebViewerMessageHandlerController_private.h"
 #import "AMPKWebViewerViewController.h"
 #import "AMPKWebViewerViewController_private.h"
+#import "NSURL+AMPK.h"
 
 static NSString * const AMPKJSBundle = @"AmpKit.bundle";
 static NSString * const AMPKJSName = @"amp_integration";
@@ -143,7 +144,7 @@ static NSString *AMPKLoadAmpIntegrationSource(void) {
   }
 }
 
-- (void)sendVisible:(BOOL)visible{
+- (void)sendVisible:(BOOL)visible {
   // Until some message has been received, we could not have received the document loaded message.
   // Therefore, don't even bother creating the message and requesting it be sent as it will not.
   if (!_lastMessage) {
@@ -182,7 +183,7 @@ static NSString *AMPKLoadAmpIntegrationSource(void) {
 - (void)userContentController:(WKUserContentController *)userContentController
       didReceiveScriptMessage:(WKScriptMessage *)message {
   // Check the message host matches with current URL host.
-  if ([_sourceHostName isEqualToString:message.frameInfo.request.URL.host]) {
+  if ([message.frameInfo.request.URL matchesCDNURL:self.source]) {
     AMPKWebViewerJsMessage *ampMessage = [message ampWebViewerJsMessage];
     AMPKWebViewerBaseMessageHandler *handler = self.messageHandlers[ampMessage.name];
     [handler handleMessage:message forAmpWebViewerController:self.ampWebViewerController];
