@@ -34,6 +34,9 @@
 /** Send a visibility state message to the webview. */
 - (void)sendVisible:(BOOL)visible;
 
+/** Send a visibility state message of prerender to the webview. */
+- (void)sendPrefetched;
+
 /** Forward a broadcast message from some other webview to this webview. */
 - (void)forwardBroadcast:(AMPKWebViewerJsMessage *)broadcast;
 

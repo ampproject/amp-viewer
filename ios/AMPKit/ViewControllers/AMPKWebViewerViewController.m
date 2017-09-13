@@ -142,18 +142,22 @@ NSString * const AMPKHeaderNameField = @"X-AMP-VIEWER";
 }
 
 - (void)setVisible:(BOOL)visible {
-  _visible = visible;
-  [_messageHandlerController sendVisible:visible];
-
-  // We should hide the entire view controller when it's not being presented. The view controller's
-  // main view will have hidden set to NO as soon as the page view controller begins to page, but
-  // before the view is ever shown to the user, so there is no visible difference. This, however,
-  // resolves an issue where the view was visible because we force it into the hierarchy for
-  // pre-fetching and was visible "behind" the current view controller if you attempt to swipe
-  // beyond the view controller at the end (either index 0 or n-1).
-  self.view.hidden = !visible;
+  if (self.viewer.isPrefetched) {
+    [_messageHandlerController sendPrefetched];
+    _visible = NO;
+    self.view.hidden = NO;
+  } else {
+    [_messageHandlerController sendVisible:visible];
+    _visible = visible;
+    // We should hide the entire view controller when it's not being presented. The view
+    // controller's main view will have hidden set to NO as soon as the page view controller begins
+    // to page but before the view is ever shown to the user so there is no visible difference.
+    // This, however, resolves an issue where the view was visible because we force it into the
+    // hierarchy for pre-fetching and was visible "behind" the current view controller if you
+    // attempt to swipe beyond the view controller at the end (either index 0 or n-1).
+    self.view.hidden = !visible;
+  }
 }
-
 
 - (void)loadAmpArticle:(id<AMPKArticleProtocol>)article
            withHeaders:(nullable NSDictionary<NSString *, NSString *> *)headers {
@@ -252,6 +256,8 @@ NSString * const AMPKHeaderNameField = @"X-AMP-VIEWER";
   // views will be hidden as soon as they are swiped away.
   if (self.visible) {
     [_messageHandlerController sendVisible:YES];
+  } else if (self.viewer.isPrefetched) {
+    [_messageHandlerController sendPrefetched];
   }
 
   NSDictionary *data = AMPK_VERIFY_CLASS(message.data, NSDictionary);
