@@ -222,13 +222,4 @@ static NSString *kDomainName = @"https://www.google.com";
   XCTAssertEqualObjects(sanitizedCDNURL, [invalidCDNURL sanitizedCDNURL]);
 }
 
-- (void)testSanitizesURLWithTrailingSlash {
-  NSString *invalidCDN = @"https://www-theverge-com.cdn.ampproject.org/v/s/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/?amp_js_v=0.1#test=1&visibilityState=prerender";
-  NSString *sanitizedCDN = @"https://www-theverge-com.cdn.ampproject.org/c/s/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/";
-
-  NSURL *invalidCDNURL = [NSURL URLWithString:invalidCDN];
-  NSURL *sanitizedCDNURL = [NSURL URLWithString:sanitizedCDN];
-  XCTAssertEqualObjects(sanitizedCDNURL, [invalidCDNURL sanitizedCDNURL]);
-}
-
 @end

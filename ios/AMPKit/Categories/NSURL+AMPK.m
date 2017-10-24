@@ -40,14 +40,6 @@ static NSDictionary *kAMPSharingBasePathMapping(void) {
     }
     // We need to include the leading "/" since this is the first path component.
     pathComponents[0] = @"/c";
-    // Remember to append the trailing '/' to the new path components if it existed in the old path.
-    // By default, iOS will strip this. Some publishers are very sensitive to this slash so we need
-    // to keep it.
-    if ([components.path hasSuffix:@"/"]) {
-      NSString *lastComponent = [pathComponents lastObject];
-      lastComponent = [lastComponent stringByAppendingString:@"/"];
-      pathComponents[pathComponents.count - 1] = lastComponent;
-    }
     components.path = [pathComponents componentsJoinedByString:@"/"];
     components.query = nil;
     components.fragment = nil;
