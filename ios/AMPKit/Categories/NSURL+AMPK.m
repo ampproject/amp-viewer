@@ -27,6 +27,12 @@ static NSDictionary *kAMPSharingBasePathMapping(void) {
   return @{ @"http" : @"/amp/", @"https" : @"/amp/s/" };
 }
 
+// These are a set of query params that if set should be removed from the input CDN URL. These are
+// either invalid for AMPKit or are manually set by AMPKit later and should be ignored as input.
+static NSArray *kAMPRuntimeQueryParamsBlackList(void) {
+  return @[@"webview", @"dialog", @"viewport", @"visibilityState", @"prerenderSize", @"amp_js_v"];
+}
+
 @implementation NSURL (AMP)
 
 - (nullable NSURL *)sanitizedCDNURL {
@@ -49,7 +55,14 @@ static NSDictionary *kAMPSharingBasePathMapping(void) {
       pathComponents[pathComponents.count - 1] = lastComponent;
     }
     components.path = [pathComponents componentsJoinedByString:@"/"];
+    NSMutableArray<NSURLQueryItem *> *queryItems = [[components queryItems] mutableCopy];
+    for (NSURLQueryItem *item in components.queryItems) {
+      if ([kAMPRuntimeQueryParamsBlackList() containsObject:item.name]) {
+        [queryItems removeObject:item];
+      }
+    }
     components.query = nil;
+    components.queryItems = (queryItems.count == 0 ? nil : queryItems);
     components.fragment = nil;
     return [components URL];
   }
