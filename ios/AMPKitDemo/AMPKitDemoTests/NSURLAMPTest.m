@@ -231,4 +231,30 @@ static NSString *kDomainName = @"https://www.google.com";
   XCTAssertEqualObjects(sanitizedCDNURL, [invalidCDNURL sanitizedCDNURL]);
 }
 
+- (void)testCDNURLWithParams {
+  NSString *inputCDNURLString = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/?usqp%3Dmq331AQECAAYAA%253D%253D";
+
+  NSURL *inputCDNURL = [NSURL URLWithString:inputCDNURLString];
+  NSURL *outputCDNURL = [inputCDNURL sanitizedCDNURL];
+  XCTAssertEqualObjects(inputCDNURLString, outputCDNURL.absoluteString);
+}
+
+- (void)testCDNURLWithMultipleParams {
+  NSString *inputCDNURLString = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/?test=yes&visibilityState=test&hello=world";
+  NSString *expectedCDNURLString = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/?test=yes&hello=world";
+
+  NSURL *inputCDNURL = [NSURL URLWithString:inputCDNURLString];
+  NSURL *outputCDNURL = [inputCDNURL sanitizedCDNURL];
+  XCTAssertEqualObjects(expectedCDNURLString, outputCDNURL.absoluteString);
+}
+
+- (void)testCDNURLWithBlacklistedParamFirst {
+  NSString *inputCDNURLString = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/?visibilityState=test&test=yes&hello=world";
+  NSString *expectedCDNURLString = @"https://cdn.ampproject.org/c/www.theverge.com/platform/amp/circuitbreaker/2017/9/6/16254802/new-iphone-change-event/?test=yes&hello=world";
+
+  NSURL *inputCDNURL = [NSURL URLWithString:inputCDNURLString];
+  NSURL *outputCDNURL = [inputCDNURL sanitizedCDNURL];
+  XCTAssertEqualObjects(expectedCDNURLString, outputCDNURL.absoluteString);
+}
+
 @end
