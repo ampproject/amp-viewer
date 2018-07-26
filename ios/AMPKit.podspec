@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'AMPKit'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.authors          = "The AMP HTML authors."
   s.summary          = 'A library for displaying AMP results in a native viewer'
 
@@ -35,9 +35,9 @@ An AMP viewer for iOS that supports prefetching articles and loading multiple AM
      'AMPKit' => ['AMPKit/Icons.xcassets', 'AMPKit/AMPKHeaderView.xib', 'AMPKit/Resources/amp_integration.js', 'AMPKit/vendor/ampkit-url-creator.js']
   }
 
-   s.public_header_files = './AMPKit/**/*.h'
-   s.frameworks = 'UIKit', 'SafariServices', 'WebKit'
-   s.dependency 'MaterialComponents/ActivityIndicator', '~> 29.0'
-   s.dependency 'MaterialComponents/Buttons', '~> 29.0'
-   s.dependency 'GoogleToolboxForMac/Defines', '~> 2.1'
+  s.public_header_files = 'AMPKit/**/*.h'
+  s.frameworks = 'UIKit', 'SafariServices', 'WebKit'
+  s.dependency 'MaterialComponents/ActivityIndicator', '~> 29.0'
+  s.dependency 'MaterialComponents/Buttons', '~> 29.0'
+  s.dependency 'GoogleToolboxForMac/Defines', '~> 2.1'
 end
