@@ -1,0 +1,29 @@
+{
+  "name": "amp-url-creator",
+  "version": "1.0.0",
+  "description": "Utility functions for constructing AMP Cache domain URLs.",
+  "main": "amp-url-creator.js",
+  "files": [
+    "amp-url-creator.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ampproject/amp-viewer.git"
+  },
+  "keywords": [
+    "amp",
+    "amphtml",
+    "viewer",
+    "cache",
+    "domain",
+    "url"
+  ],
+  "author": "The AMP HTML Authors",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ampproject/amp-viewer/issues"
+  },
+  "homepage": "https://github.com/ampproject/amp-viewer#readme"
+}
