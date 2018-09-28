@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {constructViewerCacheUrl, constructCacheDomain_} from '../src/amp-url-creator';
+import {constructViewerCacheUrl, constructCacheDomain_} from '../src/amp-url-creator/amp-url-creator';
 
 const punycode = require('punycode');
 

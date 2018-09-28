@@ -15,7 +15,7 @@
  */
 
 
-import {parseUrl} from '../utils/url';
+import {parseUrl} from '../../utils/url';
 
 const punycode = require('punycode');
 

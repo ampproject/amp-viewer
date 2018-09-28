@@ -16,7 +16,7 @@
 
 import {History} from './history';
 import {ViewerMessaging} from './viewer-messaging';
-import {constructViewerCacheUrl} from './amp-url-creator';
+import {constructViewerCacheUrl} from './amp-url-creator/amp-url-creator';
 import {log} from '../utils/log';
 import {parseUrl} from '../utils/url';
 
