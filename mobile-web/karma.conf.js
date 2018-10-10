@@ -34,11 +34,7 @@ module.exports = {
   browserify: {
     watch: true,
     debug: true,
-    transform: [["babelify", { 
-      "presets": ["env"],
-      global: true,
-      ignore: /\/node_modules\/(?!amp-toolbox-cache-url\/)/
-    }]],
+    transform: ['babelify'],
     bundleDelay: 900,
   },
 
