@@ -17,7 +17,7 @@
 
 module.exports = {
 
-  files: ['mobile-web/tests/**/*.js'],
+  files: ['tests/**/*.js'],
 
   frameworks: [
     'browserify',
@@ -27,14 +27,18 @@ module.exports = {
   ],
 
   preprocessors: {
-    'mobile-web/src/**/*.js': ['browserify'],
-    'mobile-web/tests/**/*.js': ['browserify'],
+    'src/**/*.js': ['browserify'],
+    'tests/**/*.js': ['browserify'],
   },
 
   browserify: {
     watch: true,
     debug: true,
-    transform: ['babelify'],
+    transform: [["babelify", { 
+      "presets": ["env"],
+      global: true,
+      ignore: /\/node_modules\/(?!amp-toolbox-cache-url\/)/
+    }]],
     bundleDelay: 900,
   },
 
