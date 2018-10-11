@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var ampURLCreator = require('amp-url-creator');
+var ampURLCreator = require('../src/amp-url-creator');
 
 /**
 * Constructs a Viewer cache url for AmpKit using these rules:

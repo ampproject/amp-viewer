@@ -17,7 +17,7 @@
 
 module.exports = {
 
-  files: ['mobile-web/tests/**/*.js'],
+  files: ['tests/**/*.js'],
 
   frameworks: [
     'browserify',
@@ -27,8 +27,8 @@ module.exports = {
   ],
 
   preprocessors: {
-    'mobile-web/src/**/*.js': ['browserify'],
-    'mobile-web/tests/**/*.js': ['browserify'],
+    'src/**/*.js': ['browserify'],
+    'tests/**/*.js': ['browserify'],
   },
 
   browserify: {
