@@ -27,7 +27,7 @@
     "minimist": "1.2.0",
     "mocha": "7.0.0",
     "run-sequence": "1.2.2",
-    "sinon": "2.4.1",
+    "sinon": "8.1.1",
     "sinon-chai": "2.14.0",
     "watchify": "3.11.0",
     "webpack": "2.6.1",
