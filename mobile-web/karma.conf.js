@@ -14,51 +14,47 @@
  * limitations under the License.
  */
 
+module.exports = function(config) {
+  config.set({
+    files: ["tests/**/*.js"],
 
-module.exports = {
+    frameworks: ["browserify", "chai", "mocha", "sinon-chai"],
 
-  files: ['tests/**/*.js'],
-
-  frameworks: [
-    'browserify',
-    'chai',
-    'mocha',
-    'sinon-chai',
-  ],
-
-  preprocessors: {
-    'src/**/*.js': ['browserify'],
-    'tests/**/*.js': ['browserify'],
-  },
-
-  browserify: {
-    watch: true,
-    debug: true,
-    transform: ['babelify'],
-    bundleDelay: 900,
-  },
-
-  port: 9876,
-  colors: true,
-  logLevel: process.env.TRAVIS ? 'ERROR' : 'WARN',
-  autoWatch: true,
-  browsers: [
-    process.env.TRAVIS ? 'Chrome_travis_ci' : 'Chrome_no_extensions',
-  ],
-
-  // Number of sauce tests to start in parallel
-  concurrency: 6,
-
-  customLaunchers: {
-    /*eslint "google-camelcase/google-camelcase": 0*/
-    Chrome_travis_ci: {
-      base: 'Chrome',
-      flags: ['--no-sandbox', '--disable-extensions'],
+    preprocessors: {
+      "src/**/*.js": ["browserify"],
+      "tests/**/*.js": ["browserify"]
     },
-    Chrome_no_extensions: {
-      base: 'Chrome',
-      // Dramatically speeds up iframe creation time.
-      flags: ['--disable-extensions'],
+
+    browserify: {
+      watch: true,
+      debug: true,
+      transform: ["babelify"],
+      bundleDelay: 900
     },
-  },
+
+    port: 9876,
+    colors: true,
+    logLevel: process.env.TRAVIS ? "ERROR" : "WARN",
+    autoWatch: true,
+    browsers: [
+      process.env.TRAVIS ? "Chrome_travis_ci" : "Chrome_no_extensions"
+    ],
+    singleRun: true,
+
+    // Number of sauce tests to start in parallel
+    concurrency: 6,
+
+    customLaunchers: {
+      /*eslint "google-camelcase/google-camelcase": 0*/
+      Chrome_travis_ci: {
+        base: "Chrome",
+        flags: ["--no-sandbox", "--disable-extensions"]
+      },
+      Chrome_no_extensions: {
+        base: "Chrome",
+        // Dramatically speeds up iframe creation time.
+        flags: ["--disable-extensions"]
+      }
+    }
+  });
 };

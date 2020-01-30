@@ -5,6 +5,7 @@
 
 | Command                                                                 | Description                                                           |
 | ----------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| **`gulp`** | Runs "build" |
-| **`gulp serve`** or **`gulp watch`** | Runs "build" with watch and runs a localhost webserver |
-| **`gulp clean`** | deletes the /dist directory |
+| **`yarn build`** | Runs "build" |
+| **`yarn watch`** | Runs "build" with watch and runs a localhost webserver |
+| **`yarn test`** | executes tests in /tests directory |
+| **`yarn clean`** | deletes the /dist directory |
