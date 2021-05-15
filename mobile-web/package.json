@@ -10,8 +10,8 @@
     "amp-viewer-messaging": "1.0.2"
   },
   "devDependencies": {
-    "@babel/core": "7.8.3",
-    "@babel/preset-env": "7.8.3",
+    "@babel/core": "7.14.2",
+    "@babel/preset-env": "7.14.2",
     "@rollup/plugin-node-resolve": "7.0.0",
     "babelify": "10.0.0",
     "browserify": "16.5.0",
